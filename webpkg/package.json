@@ -1,0 +1,8 @@
+{
+  "name": "decotax",
+  "version": "1.0.0",
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
