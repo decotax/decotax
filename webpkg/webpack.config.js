@@ -3,7 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
-module.exports = {
+const path = require('path');
+
+module.exports = env => { return {
   entry: './bootstrap.js',
   module: {
     rules: [
@@ -16,12 +18,18 @@ module.exports = {
   optimization: {
     minimizer: [ `...`, new CssMinimizerPlugin() ]
   },
+  output: {
+    path: path.resolve(__dirname,
+                       `../out/webpkg/${env.assetDir}`)
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'DecoTax',
-      filename: 'main.html',
-      template: 'main-template.html'
+      filename: '../main.html',
+      template: 'main-template.html',
+      base: `${env.assetDir}/`,
+      publicPath: ''
     }),
     new MiniCssExtractPlugin()
   ]
-};
+}};
