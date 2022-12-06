@@ -7,3 +7,4 @@ ASSET_DIR=$(cat VERSION)
   [ -d ./node_modules ] || npm install
   npx webpack --mode production --env assetDir=$ASSET_DIR
 )
+cp logo/favicon.ico out/webpkg
