@@ -1,5 +1,7 @@
+@import "fonts.css";
+
 body {
   color: gray;
-  font: italic 18pt serif;
+  font: 18pt "Source Sans Pro";
   margin: 20px;
 }

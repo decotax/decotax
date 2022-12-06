@@ -12,6 +12,11 @@ module.exports = env => { return {
       {
         test: /\.css$/,
         use: [ MiniCssExtractPlugin.loader, 'css-loader' ]
+      },
+      {
+        test: /\.woff2$/,
+        type: 'asset/resource',
+        generator: { filename: '../fonts/[base]' }
       }
     ]
   },
@@ -28,6 +33,7 @@ module.exports = env => { return {
       filename: '../main.html',
       template: 'main-template.html',
       base: `${env.assetDir}/`,
+      inject: false,
       publicPath: ''
     }),
     new MiniCssExtractPlugin()
