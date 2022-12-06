@@ -8,7 +8,7 @@ EXISTING=$(
       http://s.deco.tax/$ASSET_DIR/main.js
 )
 
-[ "$EXISTING" -eq "404" ] || {
+[ "$EXISTING" == "404" ] || [ "$1" == "-f" ] || {
   echo "$ASSET_DIR already deployed; increment ./VERSION"
   exit 1
 }
