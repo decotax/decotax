@@ -1,11 +1,25 @@
+<!-- Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
+
+     This is the template for the main page, processed by html-webpack-plugin
+     (see webpack.config.js).
+  -->
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- This is also sent in the HTTP Content-Type header. -->
     <meta charset="utf-8" />
+
     <title><%= htmlWebpackPlugin.options.title %></title>
+
+    <!-- Indicate mobile-friendly page. -->
     <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- This brings in main.js (as script defer) and main.css. -->
     <%= htmlWebpackPlugin.tags.headTags %>
+
+    <!-- Load the main UI font resource in parallel with main.css. -->
     <link rel="preload" href="../fonts/ssp-v21-l.woff2" as="font" crossorigin>
+
   </head>
   <body>
     Under construction

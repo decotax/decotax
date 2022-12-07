@@ -1,1 +1,6 @@
+/* Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file. */
+
+/* This brings in @font-face declarations for all the web fonts we want to use.
+ */
+
 @import "../third_party/fonts/sourcesanspro/woff2/sourcesanspro.css";
