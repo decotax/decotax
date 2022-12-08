@@ -5,7 +5,133 @@
 @import "fonts.css";
 
 body {
-  color: gray;
-  font: 18pt "Source Sans Pro";
-  margin: 20px;
+  margin: 0;
+  font-family: "Source Sans Pro";
+}
+
+#under-construction > input {
+  margin: 10px;
+  border: 0;
+}
+
+#viewport {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 320px;
+}
+
+/* The UI is designed for minimum 320px screens (e.g. iPhone SE). */
+
+#hdr {
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  top: 7px;
+  min-width: 306px;
+}
+
+/* The "dt" logo in the upper left is composed as two overlapping divs with
+ * clip paths defined using Bezier curves; see logo/path.svg, created using:
+ * https://yqnn.github.io/svg-path-editor/
+ */
+
+#hdr-logo1 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  clip-path: path(
+    'M 7 1 C 8 0 10 0 9 2 C 4 12 2 8 3 6 C 4 4 5 3 8 3 L 10 3 L 10 4 \
+     L 7 4 C 6 4 5 4 4 6 C 3 8 5 8 6 6 C 7 4 8 3 8 2 C 8 1 8 1 7 1');
+  transform: translate(10px, 25px) scale(5);
+  background: linear-gradient(0deg, #78b0ff 0%, #999 50%);
+}
+
+#hdr-logo2 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  clip-path: path(
+    'M 8 2 C 8 4 6 6 6 7 C 6 9 8 9 9 7 C 7 9 7 7 7 6 C 7 5 8 5 8 2');
+  transform: translate(10px, 25px) scale(5);
+  background: linear-gradient(0deg, #78b0ff 0%, #999 50%);
+}
+
+#hdr-bar {
+  position: absolute;
+  left: 40px;
+  top: 20px;
+  right: 5px;
+  height: 5px;
+  background: linear-gradient(90deg, #999 0%, #ccc0bc 100%);
+  border-radius: 0 0 5px 0;
+}
+
+/* Two white "highlight" gradients are positioned on top of the horizontal bar
+ * (which also has a gradient in its own background).
+ */
+
+#hdr-bar-light1 {
+  position: absolute;
+  left: 35px;
+  top: 18px;
+  width: 50px;
+  height: 8px;
+  background: radial-gradient(at 50px 0px, white, transparent);
+}
+
+#hdr-bar-light2 {
+  position: absolute;
+  left: 85px;
+  top: 18px;
+  right: 5px;
+  height: 8px;
+  background: radial-gradient(at 0px 0px, white, transparent);
+}
+
+#hdr-links {
+  position: absolute;
+  left: 45px;
+  top: -7px;
+  right: 0;
+}
+
+/* Tap targets should be at least 48x48 and 8px apart for mobile accessibility.
+ * We take some pains to ensure this with padding, margins, positioning.
+ */
+
+a.hdr-link {
+  display: inline-block;
+  margin: 0 4px;
+  padding: 5px 9px 22px;
+  height: 21px;
+  text-decoration: none;
+  color: #304666;
+}
+
+#hdr-home {
+  display: block;
+  position: absolute;
+  left: -52px;
+  top: 0;
+  width: 48px;
+  height: 59px;
+  margin: 0;
+  padding: 0;
+}
+
+#hdr-user {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 15px;
+  margin-right: -7px;
+  min-width: 24px;
+  text-align: right;
 }
