@@ -12,7 +12,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const path = require('path');
 
 module.exports = env => { return {
-  entry: './bootstrap.js',
+  entry: './js/bootstrap.js',
   module: {
     rules: [
       {
