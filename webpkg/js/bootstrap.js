@@ -8,10 +8,11 @@ import "../css/main.css";
 
 import { setupSecretLaunch } from "./under-construction.js";
 import { initApp } from "./app.js";
+import { getFirebaseConfig } from "./fb-config.js";
 
 // The bootstrap module is loaded as <script defer> which is guaranteed to run
 // before the DOMContentLoaded event fires.
 addEventListener("DOMContentLoaded", async () => {
   await setupSecretLaunch();
-  initApp();
+  initApp(getFirebaseConfig());
 });

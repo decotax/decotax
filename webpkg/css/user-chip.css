@@ -24,11 +24,11 @@
   overflow: hidden;
 }
 
-#hdr-user.logged-out, #hdr-user.logged-in {
+.logged-out #hdr-user, .logged-in #hdr-user {
   display: block;
 }
 
-#hdr-user.logged-out > #hdr-user-icon {
+.logged-out #hdr-user-icon {
   filter: grayscale(1);
   opacity: 0.5;
 }

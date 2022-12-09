@@ -17,10 +17,10 @@
       <div id="hdr-user-maxwidth">
         <a href=".." class="hdr-link" id="hdr-user"><!--
           --><span id="hdr-user-icon">👤</span><!--
-          --><span id="hdr-user-label"> Log In</span><!--
+          --><span id="hdr-user-label"> Log in</span><!--
         --></a>
         <div id="popup-user">
-          <form action="about:blank" method="post">
+          <form id="frm-login" action="about:blank" method="post">
             <label for="email">
               Email
               <input type="email" id="email" name="email">
@@ -30,6 +30,9 @@
               <input type="password" id="password" name="password">
             </label>
             <input type="submit" value="Log in">
+          </form>
+          <form id="frm-logout" action="about:blank" method="post">
+            <input type="submit" value="Log out">
           </form>
           <div class="shade">
             <div>⌛</div>

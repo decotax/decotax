@@ -17,6 +17,18 @@
   color: #444;
 }
 
+#frm-login, #frm-logout {
+  display: none;
+}
+
+.logged-out #frm-login {
+  display: block;
+}
+
+.logged-in #frm-logout {
+  display: block;
+}
+
 .open-user #popup-user {
   display: block;
 }
@@ -49,4 +61,12 @@
 
 #popup-user input[type=submit]:hover {
   background: #43ad61;
+}
+
+.logged-in #popup-user {
+  width: 130px;
+}
+
+.logged-in #popup-user input[type=submit] {
+  margin-left: 20px;
 }
