@@ -3,4 +3,4 @@
 /* This brings in @font-face declarations for all the web fonts we want to use.
  */
 
-@import "../third_party/fonts/sourcesanspro/woff2/sourcesanspro.css";
+@import "../../third_party/fonts/sourcesanspro/woff2/sourcesanspro.css";
