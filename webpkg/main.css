@@ -110,6 +110,11 @@ a.hdr-link {
   white-space: nowrap;
 }
 
+a.hdr-link:hover:not(#hdr-home) {
+  background: linear-gradient(0deg,
+    transparent 40%, #78b0ff30 50%, #78b0ff20 80%, transparent 100%);
+}
+
 #hdr-home {
   display: block;
   position: absolute;
@@ -162,6 +167,10 @@ a.hdr-link {
   #hdr-links { top: -14px; }
   #hdr-home { top: 7px; }
   a.hdr-link { padding-top: 12px; padding-bottom: 15px; }
+  a.hdr-link:hover:not(#hdr-home) {
+    background: linear-gradient(0deg,
+      transparent 30%, #78b0ff30 40%, #78b0ff20 80%, transparent 90%);
+  }
 }
 
 /* 320-375 = tiny phones (iPhone SE/mini, S9) */
