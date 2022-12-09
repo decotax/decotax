@@ -2,6 +2,7 @@
 
 // The user can type the magic word to show the real (not yet functional) app
 // in place of the "under construction" message.
+
 async function setupSecretLaunch() {
   const uc_field = document.querySelector("#under-construction").firstChild;
   uc_field.select();
