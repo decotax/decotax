@@ -1,0 +1,39 @@
+/* Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file. */
+
+/* Styles the link in the upper right that shows the login status. */
+
+#hdr-user-maxwidth {
+  position: absolute;
+  left: 224px;
+  top: 0;
+  right: 0;
+  height: 48px;
+}
+
+#hdr-user {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 15px;
+  margin-right: -7px;
+  min-width: 24px;
+  text-align: right;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#hdr-user.logged-out, #hdr-user.logged-in {
+  display: block;
+}
+
+#hdr-user.logged-out > #hdr-user-icon {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+#hdr-user-label {
+  display: none;
+  vertical-align: top;
+}
