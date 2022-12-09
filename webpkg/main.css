@@ -218,6 +218,25 @@ a.hdr-link:hover:not(#hdr-home) {
   background: #43ad61;
 }
 
+.shade {
+  display: none;
+  background: #8883;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  user-select: none;
+}
+
+.shade > div {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0 0 12px 80px;
+  font-size: 18pt;
+}
+
 @media (min-width: 360px) {
   #viewport { left: 14px; right: 14px; top: 14px; }
   #hdr-links { top: -14px; }

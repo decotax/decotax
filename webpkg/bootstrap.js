@@ -22,6 +22,13 @@ function init_app() {
     }
     e.preventDefault();
   });
+  const login_form = document.querySelector("#popup-user > form");
+  const progress_shade = document.querySelector("#popup-user > .shade");
+  login_form.addEventListener("submit", e => {
+    progress_shade.style.display = "block";
+    // TODO: do the login.
+    e.preventDefault();
+  });
 }
 
 // The user can type the magic word to show the real (not yet functional) app
