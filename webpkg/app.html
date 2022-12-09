@@ -1,0 +1,41 @@
+<!-- Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
+
+     This is the main template for the app (currently just the header).
+  -->
+<div id="viewport">
+  <div id="hdr">
+    <div id="hdr-logo1"></div>
+    <div id="hdr-logo2"></div>
+    <div id="hdr-bar"></div>
+    <div id="hdr-bar-light1"></div>
+    <div id="hdr-bar-light2"></div>
+    <div id="hdr-links">
+      <a href=".." class="hdr-link" id="hdr-home"></a><!--
+      --><a href=".." class="hdr-link" id="hdr-files">Files</a><!--
+      --><a href=".." class="hdr-link" id="hdr-toolbox">Toolbox</a><!--
+      --><a href=".." class="hdr-link" id="hdr-about">About</a>
+      <div id="hdr-user-maxwidth">
+        <a href=".." class="hdr-link" id="hdr-user"><!--
+          --><span id="hdr-user-icon">👤</span><!--
+          --><span id="hdr-user-label"> Log In</span><!--
+        --></a>
+        <div id="popup-user">
+          <form action="about:blank" method="post">
+            <label for="email">
+              Email
+              <input type="email" id="email" name="email">
+            </label>
+            <label for="password">
+              Password
+              <input type="password" id="password" name="password">
+            </label>
+            <input type="submit" value="Log in">
+          </form>
+          <div class="shade">
+            <div>⌛</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
