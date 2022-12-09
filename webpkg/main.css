@@ -59,7 +59,7 @@ body {
 
 #hdr-bar {
   position: absolute;
-  left: 40px;
+  left: 39px;
   top: 20px;
   right: 5px;
   height: 5px;
@@ -107,6 +107,7 @@ a.hdr-link {
   height: 21px;
   text-decoration: none;
   color: #304666;
+  white-space: nowrap;
 }
 
 #hdr-home {
@@ -120,8 +121,16 @@ a.hdr-link {
   padding: 0;
 }
 
+#hdr-user-maxwidth {
+  position: absolute;
+  left: 224px;
+  top: 0;
+  right: 0;
+  height: 48px;
+}
+
 #hdr-user {
-  display: block;
+  display: none;
   position: absolute;
   top: 0;
   right: 0;
@@ -129,6 +138,23 @@ a.hdr-link {
   margin-right: -7px;
   min-width: 24px;
   text-align: right;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#hdr-user.logged-out, #hdr-user.logged-in {
+  display: block;
+}
+
+#hdr-user.logged-out > #hdr-user-icon {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+#hdr-user-label {
+  display: none;
+  vertical-align: top;
 }
 
 @media (min-width: 360px) {
@@ -143,6 +169,7 @@ a.hdr-link {
 
 @media (min-width: 376px) {
   #viewport { left: 21px; right: 21px; top: 17px; }
+  #hdr-user-label { display: inline; }
 }
 
 /* >480 = tablet threshold */
