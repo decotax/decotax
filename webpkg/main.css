@@ -162,6 +162,62 @@ a.hdr-link:hover:not(#hdr-home) {
   vertical-align: top;
 }
 
+.open-user #hdr-user {
+  /* Use !important to override unopened :hover style. */
+  background: linear-gradient(0deg,
+    #78b0ff 0, #c9dfff 30%, #78b0ff30 50%,
+    #78b0ff20 80%, transparent 100%) !important;
+}
+
+#popup-user {
+  display: none;
+  position: absolute;
+  right: -7px;
+  top: 45px;
+  width: 270px;
+  padding: 10px 15px;
+  border: 2px solid #f2f7ff;
+  border-radius: 2px;
+  outline: 2px solid #93c0ff;
+  background: #e4efff;
+  font: bold 10pt sans-serif;
+  color: #444;
+}
+
+.open-user #popup-user {
+  display: block;
+}
+
+#popup-user label {
+  display: block;
+  height: 56px;
+}
+
+#email, #password {
+  display: block;
+  margin-top: 2px;
+  width: 255px;
+  font-size: 11pt;
+  padding: 4px;
+}
+
+#popup-user input[type=submit] {
+  font-size: 11pt;
+  font-weight: bold;
+  background: #2ea44f;
+  border: 1px solid #1b1f234c;
+  border-radius: 6px;
+  box-shadow: #1b1f234c 2px 2px 2px;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px 16px;
+  margin: 4px 0 2px 100px;
+}
+
+#popup-user input[type=submit]:hover {
+  background: #43ad61;
+}
+
 @media (min-width: 360px) {
   #viewport { left: 14px; right: 14px; top: 14px; }
   #hdr-links { top: -14px; }
