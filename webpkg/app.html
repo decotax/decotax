@@ -10,16 +10,31 @@
     <div id="hdr-bar-light1"></div>
     <div id="hdr-bar-light2"></div>
     <div id="hdr-links">
-      <a href=".." class="hdr-link" id="hdr-home"></a><!--
-      --><a href=".." class="hdr-link" id="hdr-files">Files</a><!--
-      --><a href=".." class="hdr-link" id="hdr-toolbox">Toolbox</a><!--
-      --><a href=".." class="hdr-link" id="hdr-about">About</a>
+      <a href=".." class="hdr-link" id="hdr-home"></a>
+      <div class="hdr-link-wrap">
+        <a href=".." class="hdr-link" id="hdr-files">Files</a>
+      </div>
+      <div class="hdr-link-wrap">
+        <a href=".." class="hdr-link" id="hdr-toolbox">Toolbox</a>
+        <div id="popup-toolbox" class="hdr-popup">
+          There are no public modules yet.
+          <div class="if-logged-out">
+            For custom modules and blank forms, log in first.
+          </div>
+          <div class="if-logged-in">
+            Blank forms
+          </div>
+        </div>
+      </div>
+      <div class="hdr-link-wrap">
+        <a href=".." class="hdr-link" id="hdr-about">About</a>
+      </div>
       <div id="hdr-user-maxwidth">
         <a href=".." class="hdr-link" id="hdr-user"><!--
           --><span id="hdr-user-icon">👤</span><!--
           --><span id="hdr-user-label"> Log in</span><!--
         --></a>
-        <div id="popup-user">
+        <div id="popup-user" class="hdr-popup">
           <form id="frm-login" action="about:blank" method="post">
             <label for="email">
               Email

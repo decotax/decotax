@@ -3,16 +3,8 @@
 /* Styles the login / account popup. */
 
 #popup-user {
-  display: none;
-  position: absolute;
   right: -7px;
-  top: 45px;
   width: 270px;
-  padding: 10px 15px;
-  border: 2px solid #f2f7ff;
-  border-radius: 2px;
-  outline: 2px solid #93c0ff;
-  background: #e4efff;
   font: bold 10pt sans-serif;
   color: #444;
 }

@@ -20,7 +20,7 @@ ASSET_DIR=$(cat VERSION)
   [ -d ./node_modules ] || npm install
 
   # This runs webpack, which will write to out/webpkg.
-  npx webpack --mode production --env assetDir=$ASSET_DIR
+  npx webpack --mode ${1:-production} --env assetDir=$ASSET_DIR
 )
 
 # Copy any static files that webpack doesn't know about.

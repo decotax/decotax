@@ -47,6 +47,9 @@ module.exports = env => { return {
       filename: '../main.html',
       template: 'main-template.html',
 
+      // Minify even in dev mode (whitespace is semantically meaningful).
+      minify: true,
+
       // Need this when the template writes headTags explicitly.
       inject: false,
 
