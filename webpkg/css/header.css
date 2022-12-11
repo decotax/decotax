@@ -164,6 +164,19 @@ a.hdr-link:hover:not(#hdr-home) {
   display: block;
 }
 
+#btn-blank-forms {
+  font-size: 11pt;
+  font-weight: bold;
+  background: #a44f2e;
+  border: 1px solid #1b1f234c;
+  border-radius: 6px;
+  box-shadow: #1b1f234c 2px 2px 2px;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px 16px;
+  margin: 4px 0 2px 20px;
+}
+
 @import "user-chip.css";
 @import "user-popup.css";
 
@@ -178,12 +191,21 @@ a.hdr-link:hover:not(#hdr-home) {
   user-select: none;
 }
 
-.shade > div {
+.spinner {
   position: absolute;
+  font-size: 18pt;
+  animation: 2.5s linear infinite spin;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.shade > .spinner {
   left: 0;
   bottom: 0;
-  padding: 0 0 12px 80px;
-  font-size: 18pt;
+  margin: 0 0 12px 80px;
 }
 
 @media (min-width: 360px) {

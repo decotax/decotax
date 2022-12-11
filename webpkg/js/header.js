@@ -16,7 +16,7 @@ function _setupLink(link_config) {
     const should_open =
         g_current_opened_link_config != link_config;
 
-    _closeAnyOpened();
+    closeHeaderPopups();
 
     if (should_open) {
       g_menu.classList.add(opened_class);
@@ -29,7 +29,7 @@ function _setupLink(link_config) {
   });
 }
 
-function _closeAnyOpened() {
+function closeHeaderPopups() {
   if (g_current_opened_link_config == null)
     return;
 
@@ -42,4 +42,4 @@ function _closeAnyOpened() {
     observer.onClosed();
 }
 
-export { initHeader };
+export { initHeader, closeHeaderPopups };

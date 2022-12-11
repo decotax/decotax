@@ -10,7 +10,7 @@ import {
   signOut
 } from "firebase/auth";
 
-import { initHeader } from "./header.js";
+import { initHeader, closeHeaderPopups } from "./header.js";
 
 let g_auth;
 let g_active_progress_shade;
@@ -35,6 +35,7 @@ function initApp(firebaseConfig) {
     }
   ]);
   initLoginForm();
+  initToolbox();
 }
 
 function updateLoginStatus(user) {
@@ -72,5 +73,16 @@ function initLoginForm() {
     e.preventDefault();
   });
 }
+
+function initToolbox() {
+  const btn = document.querySelector("#btn-blank-forms");
+  btn.addEventListener("click", e => {
+    closeHeaderPopups();
+    const main_spinner = document.querySelector(".app > .spinner");
+    main_spinner.style.display = "block";
+    e.preventDefault();
+  });
+}
+
 
 export { initApp };
