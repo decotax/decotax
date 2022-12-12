@@ -30,7 +30,12 @@ module.exports = env => { return {
     ]
   },
   optimization: {
-    minimizer: [ `...`, new CssMinimizerPlugin() ]
+    minimizer: [ `...`, new CssMinimizerPlugin() ],
+
+    // We use dynamic import when we want a late-loaded chunk.  Tell webpack
+    // not to also make a separate chunk for the node_modules deps of our late
+    // modules.  (May need to revisit if we want diamond dependencies.)
+    splitChunks: { chunks: chunk => false }
   },
   output: {
     // All the output paths are relative to out/webpkg/v.a.NNNN/

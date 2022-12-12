@@ -12,11 +12,12 @@ import {
 
 import { initHeader, closeHeaderPopups } from "./header.js";
 
+let g_app;
 let g_auth;
 let g_active_progress_shade;
 
 function initApp(firebaseConfig) {
-  initializeApp(firebaseConfig);
+  g_app = initializeApp(firebaseConfig);
   g_auth = getAuth();
   onAuthStateChanged(g_auth, updateLoginStatus);
   initHeader([
@@ -78,11 +79,19 @@ function initToolbox() {
   const btn = document.querySelector("#btn-blank-forms");
   btn.addEventListener("click", e => {
     closeHeaderPopups();
-    const main_spinner = document.querySelector(".app > .spinner");
-    main_spinner.style.display = "block";
+    launchBlankForms();
     e.preventDefault();
   });
 }
 
+async function launchBlankForms() {
+  const main_spinner = document.querySelector(".app > .spinner");
+  main_spinner.style.display = "block";
+  const Module = await import(
+    /* webpackChunkName: "forms" */
+    "./blank-forms/forms.js");
+  await Module.showBlankForms(g_app, g_auth);
+  main_spinner.style.display = "none";
+}
 
 export { initApp };
