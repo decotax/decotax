@@ -39,17 +39,7 @@ def process_new_form(request):
   except cloud_exceptions.NotFound:
     raise NotFound
 
-  with fitz.open(stream = blob_bytes) as doc:
-    page_count = doc.page_count
-
-    for page_num in range(page_count):
-      page_img = doc[page_num].get_pixmap(dpi = 192)
-      img_blob = bucket.blob('%s.%s' % (path, page_num))
-
-      img_blob.upload_from_string(
-          page_img.tobytes(),
-          content_type = 'image/png')
-
+  page_count = _render_pdf(bucket, path, blob_bytes)
   return {'data': {'page_count': page_count}}
 
 
@@ -93,3 +83,20 @@ def _get_authorized_uid(request):
     raise Unauthorized
 
   return uid
+
+
+def _render_pdf(bucket, base_path, pdf_bytes):
+  '''Render the PDF and upload each page in PNG format.'''
+  with fitz.open(stream = pdf_bytes) as doc:
+    page_count = doc.page_count
+
+    for page_num in range(page_count):
+      page_img = doc[page_num].get_pixmap(dpi = 192)
+      img_blob = bucket.blob('%s.%s' % (base_path, page_num))
+
+      img_blob.upload_from_string(
+          page_img.tobytes(),
+          content_type = 'image/png')
+
+  return page_count
+

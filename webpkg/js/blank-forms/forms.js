@@ -10,6 +10,7 @@ import {  /* webpackMode: "eager" */
 } from "firebase/firestore/lite";
 
 import {
+  getBlob,
   getStorage,
   ref,
   uploadBytes
@@ -72,8 +73,8 @@ async function showBlankForms(app, auth) {
 }
 
 async function uploadNewBlankForm(auth, db) {
-  document.querySelector("#frm-canvas").innerHTML =
-      '<div class="spinner">⌛</div>';
+  const canvas_root = document.querySelector("#frm-canvas");
+  canvas_root.innerHTML = '<div class="spinner">⌛</div>';
 
   const uid = auth.currentUser.uid;
   const newRef = doc(collection(db, "dtmodules"));
@@ -90,8 +91,14 @@ async function uploadNewBlankForm(auth, db) {
   const process_new_form_url = "http://localhost:8080/";
   const fn_process = httpsCallableFromURL(functions, process_new_form_url);
 
-  const result = await fn_process({'uid': uid, 'docId': docId});
+  const result = await fn_process({"uid": uid, "docId": docId});
+
   console.log(result.data);
+
+  const page1_blob = await getBlob(ref(storage, `${path}.1`));
+  const blob_url = URL.createObjectURL(page1_blob);
+
+  canvas_root.innerHTML = `<img src="${blob_url}">`;
 }
 
 export { showBlankForms };
