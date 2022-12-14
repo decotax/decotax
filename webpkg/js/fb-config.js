@@ -12,4 +12,18 @@ function getFirebaseConfig() {
   };
 }
 
-export { getFirebaseConfig };
+function getCloudFunctionUrls() {
+  if (process.env.NODE_ENV == 'production') {
+    return {
+      "process-new-form":
+          "https://process-new-form-6b2emivy3a-ue.a.run.app"
+    }
+  }
+  else {
+    return {
+      "process-new-form": "http://localhost:8080/"
+    }
+  }
+}
+
+export { getFirebaseConfig, getCloudFunctionUrls };
