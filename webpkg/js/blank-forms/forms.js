@@ -93,7 +93,7 @@ async function uploadNewBlankForm(auth, db) {
 
   const functions = getFunctions();
   const fn_url = getCloudFunctionUrls()["process-new-form"];
-  const fn_process = httpsCallableFromURL(functions, url);
+  const fn_process = httpsCallableFromURL(functions, fn_url);
 
   const result = await fn_process({"uid": uid, "docId": docId});
 
