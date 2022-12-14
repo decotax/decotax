@@ -40,6 +40,10 @@ const g_forms_view_markup = [
   '<div id="frm-canvas"></div>'
 ].join("");
 
+// const g_process_new_form_url = "http://localhost:8080/";
+const g_process_new_form_url =
+    "https://process-new-form-6b2emivy3a-ue.a.run.app";
+
 async function showBlankForms(app, auth) {
   const db = getFirestore(app);
   const q = query(
@@ -88,8 +92,8 @@ async function uploadNewBlankForm(auth, db) {
   await uploadBytes(storageRef, file);
 
   const functions = getFunctions();
-  const process_new_form_url = "http://localhost:8080/";
-  const fn_process = httpsCallableFromURL(functions, process_new_form_url);
+  const fn_process = httpsCallableFromURL(
+      functions, g_process_new_form_url);
 
   const result = await fn_process({"uid": uid, "docId": docId});
 

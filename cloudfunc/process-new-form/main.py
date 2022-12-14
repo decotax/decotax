@@ -99,4 +99,3 @@ def _render_pdf(bucket, base_path, pdf_bytes):
           content_type = 'image/png')
 
   return page_count
-
