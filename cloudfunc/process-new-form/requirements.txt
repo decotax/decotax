@@ -1,0 +1,6 @@
+# Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
+
+Flask-Cors==3.*
+PyMuPDF==1.*
+firebase-admin==6.*
+functions-framework==3.*
