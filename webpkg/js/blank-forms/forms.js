@@ -6,10 +6,12 @@ import {  /* webpackMode: "eager" */
   getDocs,
   getFirestore,
   query,
+  setDoc,
   where
 } from "firebase/firestore/lite";
 
 import {
+  deleteObject,
   getBlob,
   getStorage,
   ref,
@@ -98,6 +100,20 @@ async function uploadNewBlankForm(auth, db) {
   const result = await fn_process({"uid": uid, "docId": docId});
 
   console.log(result.data);
+
+  if (result.data.error) {
+    // Clean up.
+    await deleteObject(storageRef);
+    canvas_root.innerText = result.data.error;
+    return;
+  }
+
+  // Finalize.
+  await setDoc(newRef, {
+    "name": "[new form]",
+    "owner": uid,
+    "pdf": true
+  });
 
   const page1_blob = await getBlob(ref(storage, `${path}.1`));
   const blob_url = URL.createObjectURL(page1_blob);

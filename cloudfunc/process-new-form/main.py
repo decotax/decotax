@@ -22,6 +22,15 @@ def process_new_form(request):
   Process a newly uploaded blank form by rendering each page of the PDF file
   to a PNG image and writing the images back to Cloud Storage.
   '''
+  try:
+    return _process_new_form_impl(request)
+  except HTTPException as e:
+    # https://github.com/corydolphin/flask-cors/issues/241
+    return {'data': {'error': str(e)}}
+
+
+def _process_new_form_impl(request):
+  '''Helper for process_new_form.'''
   (doc_id, requested_uid) = _get_request_params(request)
   if not doc_id and not requested_uid:
     return '∅'
@@ -39,7 +48,17 @@ def process_new_form(request):
   except cloud_exceptions.NotFound:
     raise NotFound
 
-  page_count = _render_pdf(bucket, path, blob_bytes)
+  if not blob_bytes:
+    raise UnprocessableEntity('empty file')
+
+  try:
+    page_count = _render_pdf(bucket, path, blob_bytes)
+  except RuntimeError as e:
+    raise UnprocessableEntity('pdf processing error: %s' % str(e))
+
+  if not page_count:
+    raise UnprocessableEntity('no pages found')
+
   return {'data': {'page_count': page_count}}
 
 
