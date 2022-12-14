@@ -7,9 +7,8 @@ from firebase_admin import auth
 from firebase_admin import initialize_app
 from firebase_admin import storage
 from flask_cors import cross_origin
-from werkzeug.exceptions import BadRequest
-from werkzeug.exceptions import Unauthorized
-from werkzeug.exceptions import Forbidden
+from google.cloud import exceptions as cloud_exceptions
+from werkzeug.exceptions import *
 
 
 # Initialize Firebase.
@@ -24,22 +23,39 @@ def process_new_form(request):
   to a PNG image and writing the images back to Cloud Storage.
   '''
   (doc_id, requested_uid) = _get_request_params(request)
-  if doc_id is None and requested_uid is None:
+  if not doc_id and not requested_uid:
     return '∅'
 
   authorized_uid = _get_authorized_uid(request)
-  if authorized_uid is None:
-    raise Unauthorized
-
   if authorized_uid != requested_uid:
     raise Forbidden
 
-  return {'data': {'greeting': 'Hello World'}}
+  bucket = storage.bucket('decotax.appspot.com')
+  path = 'form/user/%s/%s' % (requested_uid, doc_id)
+  blob = bucket.blob(path)
+
+  try:
+    blob_bytes = blob.download_as_bytes()
+  except cloud_exceptions.NotFound:
+    raise NotFound
+
+  with fitz.open(stream = blob_bytes) as doc:
+    page_count = doc.page_count
+
+    for page_num in range(page_count):
+      page_img = doc[page_num].get_pixmap(dpi = 192)
+      img_blob = bucket.blob('%s.%s' % (path, page_num))
+
+      img_blob.upload_from_string(
+          page_img.tobytes(),
+          content_type = 'image/png')
+
+  return {'data': {'page_count': page_count}}
 
 
 def _get_request_params(request):
   '''Extract the docId from the request.'''
-  json = request.get_json(silent=True)
+  json = request.get_json(silent = True)
   if not json:
     return (None, None)
 
@@ -72,4 +88,8 @@ def _get_authorized_uid(request):
   if not decoded_token:
     raise Unauthorized
 
-  return decoded_token['uid']
+  uid = decoded_token['uid']
+  if not uid:
+    raise Unauthorized
+
+  return uid
