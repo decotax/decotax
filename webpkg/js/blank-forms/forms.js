@@ -90,7 +90,7 @@ async function uploadNewBlankForm(auth, db) {
   const process_new_form_url = "http://localhost:8080/";
   const fn_process = httpsCallableFromURL(functions, process_new_form_url);
 
-  const result = await fn_process({'docId': docId});
+  const result = await fn_process({'uid': uid, 'docId': docId});
   console.log(result.data);
 }
 
