@@ -9,18 +9,26 @@ async function setupSecretLaunch() {
 
   let launched = false;
   await new Promise(resolve => {
+    const fn_launch = () => {
+      const app_el = document.querySelector("#viewport");
+      uc_field.style.display = "none";
+      app_el.style.display = "block";
+      resolve();
+      launched = true;
+    };
+
+    if (process.env.NODE_ENV == "development") {
+      fn_launch();
+      return;
+    }
+
     const check_cb = e => {
       if (launched)
         return;  // Only launch once.
 
       const magic = "hcnual";
-      if (uc_field.value.split("").reverse().join("") == magic) {
-        const app_el = document.querySelector("#viewport");
-        uc_field.style.display = "none";
-        app_el.style.display = "block";
-        resolve();
-        launched = true;
-      }
+      if (uc_field.value.split("").reverse().join("") == magic)
+        fn_launch();
     };
 
     // Watch change event for mobile, keyup for desktop.
