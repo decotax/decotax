@@ -22,6 +22,3 @@ ASSET_DIR=$(cat VERSION)
   # This runs webpack, which will write to out/webpkg.
   npx webpack --mode ${1:-production} --env assetDir=$ASSET_DIR
 )
-
-# Copy any static files that webpack doesn't know about.
-cp logo/favicon.ico out/webpkg
