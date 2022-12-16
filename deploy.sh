@@ -13,6 +13,11 @@ if [ "$1" == "favicon" ]; then
   exit
 fi
 
+if [ "$1" == "fonts" ]; then
+  gcloud storage cp out/webpkg/fonts gs://deco_tax_assets/ -r \
+      --cache-control="public, max-age=604800"
+fi
+
 ASSET_DIR=$(cat VERSION)
 
 # Check if we have already pushed the current version.
