@@ -113,6 +113,15 @@ a.hdr-link:hover:not(#hdr-home) {
     #78b0ff20 80%, transparent 100%) !important;
 }
 
+@media (max-width: 359px) {
+  .open-toolbox #hdr-toolbox,
+  .open-user #hdr-user {
+    background: linear-gradient(0deg,
+      #78b0ff 0, #c9dfff 40%, #78b0ff30 60%,
+      #78b0ff20 80%, transparent 100%) !important;
+  }
+}
+
 #hdr-home {
   display: block;
   position: absolute;
@@ -165,15 +174,6 @@ a.hdr-link:hover:not(#hdr-home) {
 }
 
 #btn-blank-forms {
-  font-size: 11pt;
-  font-weight: bold;
-  background: #a44f2e;
-  border: 1px solid #1b1f234c;
-  border-radius: 6px;
-  box-shadow: #1b1f234c 2px 2px 2px;
-  color: #fff;
-  cursor: pointer;
-  padding: 6px 16px;
   margin: 4px 0 2px 20px;
 }
 

@@ -1,14 +1,5 @@
 /* Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file. */
 
 #btn-frms-upload {
-  font-size: 11pt;
-  font-weight: bold;
-  background: #a44f2e;
-  border: 1px solid #1b1f234c;
-  border-radius: 6px;
-  box-shadow: #1b1f234c 2px 2px 2px;
-  color: #fff;
-  cursor: pointer;
-  padding: 6px 16px;
   margin: 4px 0 2px 0;
 }

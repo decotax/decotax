@@ -32,7 +32,7 @@ const g_forms_view_markup = [
     '<input type="radio" name="form-sel" id="foo" value="foo">',
     '<label for="foo">Foo</label>',
   '</form>',
-  '<button id="btn-frms-upload">',
+  '<button class="button-br" id="btn-frms-upload">',
     'Upload new blank form',
   '</button>',
   '<dialog id="dlg-upload">',

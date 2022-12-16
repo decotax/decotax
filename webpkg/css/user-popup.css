@@ -39,15 +39,6 @@
 }
 
 #popup-user input[type=submit] {
-  font-size: 11pt;
-  font-weight: bold;
-  background: #2ea44f;
-  border: 1px solid #1b1f234c;
-  border-radius: 6px;
-  box-shadow: #1b1f234c 2px 2px 2px;
-  color: #fff;
-  cursor: pointer;
-  padding: 6px 16px;
   margin: 4px 0 2px 100px;
 }
 
