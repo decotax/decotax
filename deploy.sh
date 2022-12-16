@@ -6,6 +6,9 @@
 
 set -e  # Bail on errors.
 
+./clean.sh
+./build.sh
+
 ASSET_DIR=$(cat VERSION)
 
 # Check if we have already pushed the current version.
