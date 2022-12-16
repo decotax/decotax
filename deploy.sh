@@ -6,6 +6,13 @@
 
 set -e  # Bail on errors.
 
+if [ "$1" == "favicon" ]; then
+  gcloud storage cp logo/favicon.ico gs://deco_tax_assets/ \
+      --cache-control="public, max-age=86400" \
+      --content-type="image/x-icon"
+  exit
+fi
+
 ./clean.sh
 ./build.sh
 
@@ -14,7 +21,7 @@ ASSET_DIR=$(cat VERSION)
 # Check if we have already pushed the current version.
 EXISTING=$(
   curl -s -o /dev/null -I -w "%{http_code}" \
-      http://s.deco.tax/$ASSET_DIR/main.js
+      https://storage.googleapis.com/deco_tax_assets/$ASSET_DIR/main.js
 )
 
 # Each push should use a new version since we are telling browsers to cache the
@@ -28,7 +35,7 @@ EXISTING=$(
   cd out/webpkg
 
   # Push the versioned assets first.  Cache for a long time (1 week seems fine).
-  gcloud storage cp $ASSET_DIR gs://s.deco.tax/ \
+  gcloud storage cp $ASSET_DIR gs://deco_tax_assets/ \
       -r --cache-control="public, max-age=604800"
 
   # Push the main page.  Notes:
@@ -38,7 +45,7 @@ EXISTING=$(
   #   content type.  Explicit charset=UTF-8 to override windows-1252 default.
   # - Bucket is configured with "main" as the "Index (main) page suffix" in GCP
   #   console (Overflow menu > Edit website configuration).
-  gcloud storage cp main.html gs://s.deco.tax/main \
+  gcloud storage cp main.html gs://deco_tax_assets/main \
       --cache-control="public, max-age=60" \
       --content-type="text/html; charset=UTF-8"
 
