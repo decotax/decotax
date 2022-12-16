@@ -14,16 +14,30 @@ set -e  # Bail on errors.
   # when run.sh exits (e.g. by ^C).
 
   cd cloudfunc/process-new-form
-  functions-framework --target=process_new_form &
+  functions-framework --target=process_new_form --port 8081 &
 )
 
-echo
-echo '    http://localhost:8000/main.html'
-echo
-(
-  cd out/webpkg
+if [ "$1" == "development" ]; then
 
-  # Webpack has its own dev server but there is a lot of magic that I don't
-  # fully understand and I want something "dumber" for now.
-  python3 -m http.server
-)
+  # Run webpack dev server (supports live reloading).
+  echo
+  echo '    http://localhost:8080/'
+  echo
+  (
+    cd webpkg
+    npx webpack serve --mode development
+  )
+
+else
+
+  # Serve output of production build (from build.sh).
+  # (Unfortunately Python http.server can't route / to main.html.)
+  echo
+  echo '    http://localhost:8080/main.html'
+  echo
+  (
+    cd out/webpkg
+    python3 -m http.server 8080
+  )
+
+fi

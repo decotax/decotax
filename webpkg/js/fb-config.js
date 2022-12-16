@@ -21,7 +21,7 @@ function getCloudFunctionUrls() {
   }
   else {
     return {
-      "process-new-form": "http://localhost:8080/"
+      "process-new-form": "http://localhost:8081/"
     }
   }
 }

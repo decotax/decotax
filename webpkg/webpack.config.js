@@ -13,6 +13,11 @@ const path = require('path');
 
 module.exports = env => { return {
   entry: './js/bootstrap.js',
+  devServer: {
+    historyApiFallback: {
+      rewrites: [{ from: /^\/$/, to: '/main.html' }]
+    }
+  },
   module: {
     rules: [
       {
@@ -25,7 +30,7 @@ module.exports = env => { return {
         // with every deploy.
         test: /\.woff2$/,
         type: 'asset/resource',
-        generator: { filename: '../fonts/[base]' }
+        generator: { filename: `${env.assetDir ? '..' : '.'}/fonts/[base]` }
       }
     ]
   },
@@ -49,7 +54,7 @@ module.exports = env => { return {
       title: 'DecoTax',
 
       // Generate main.html from main-template.html.
-      filename: '../main.html',
+      filename: `${env.assetDir ? '..' : '.'}/main.html`,
       template: 'main-template.html',
 
       // Minify even in dev mode (whitespace is semantically meaningful).
@@ -59,7 +64,7 @@ module.exports = env => { return {
       inject: false,
 
       // Writes a <base href> so all public paths are relative to assetDir.
-      base: `${env.assetDir}/`,
+      base: `${env.assetDir || '.'}/`,
       publicPath: '',
     }),
     new MiniCssExtractPlugin()
