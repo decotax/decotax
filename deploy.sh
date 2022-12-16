@@ -42,11 +42,9 @@ EXISTING=$(
       --cache-control="public, max-age=60" \
       --content-type="text/html; charset=UTF-8"
 
-  # Static bits are now live on s.deco.tax which is CNAME'ed to Cloud Storage
-  # bucket.  Cloudflare proxies naked domain deco.tax with worker fetch and
-  # 24-hour edge cache TTL (independent of main page's 60s max-age for browser
-  # cache).  So we need to purge the edge cache in Cloudflare UI to see the
-  # update on deco.tax.  There's an API for this as well which I will figure out
-  # at some point.
+  # Static bits are now live in the Cloud Storage bucket that Cloudflare proxies
+  # deco.tax to, using worker fetch and 24-hour edge cache TTL (independent of
+  # main page's 60s max-age for browser cache).  So we need to purge the edge
+  # cache to see the update on deco.tax.  TODO: There's an API for this...
   echo 'TODO: Purge Cloudflare cache'
 )
