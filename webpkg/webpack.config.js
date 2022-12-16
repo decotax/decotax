@@ -5,9 +5,9 @@
 // arrangement of files under out/webpkg for static hosting.
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = env => { return {
@@ -30,6 +30,11 @@ module.exports = env => { return {
         test: /\.woff2$/,
         type: 'asset/resource',
         generator: { filename: `${env.assetDir ? '..' : '.'}/fonts/[base]` }
+      },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: [ 'source-map-loader' ]
       }
     ]
   },
@@ -70,7 +75,7 @@ module.exports = env => { return {
     new CopyPlugin({
       patterns: [
         {
-          from: "../logo/favicon.ico",
+          from: '../logo/favicon.ico',
           to: `${env.assetDir ? '..' : '.'}/favicon.ico`
         }
       ]
