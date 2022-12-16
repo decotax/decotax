@@ -13,9 +13,6 @@ if [ "$1" == "favicon" ]; then
   exit
 fi
 
-./clean.sh
-./build.sh
-
 ASSET_DIR=$(cat VERSION)
 
 # Check if we have already pushed the current version.
@@ -30,6 +27,9 @@ EXISTING=$(
   echo "$ASSET_DIR already deployed; increment ./VERSION"
   exit 1
 }
+
+./clean.sh
+./build.sh
 
 (
   cd out/webpkg
@@ -49,9 +49,14 @@ EXISTING=$(
       --cache-control="public, max-age=60" \
       --content-type="text/html; charset=UTF-8"
 
-  # Static bits are now live in the Cloud Storage bucket that Cloudflare proxies
-  # deco.tax to, using worker fetch and 24-hour edge cache TTL (independent of
-  # main page's 60s max-age for browser cache).  So we need to purge the edge
-  # cache to see the update on deco.tax.  TODO: There's an API for this...
-  echo 'TODO: Purge Cloudflare cache'
+  # Cloudflare worker sets 24-hour TTL, purge main resource to see update.
+  if [ -n "$CLOUDFLARE_PURGE_TOKEN_FILE" ]; then
+    echo "Purging Cloudflare cache for deco_tax_assets/main..."
+    curl --request POST \
+      --url "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONEID}/purge_cache" \
+      --header "Content-Type: application/json" \
+      --header "Authorization: Bearer $(cat $CLOUDFLARE_PURGE_TOKEN_FILE)" \
+      --data '{ "files": [ "https://storage.googleapis.com/deco_tax_assets/main" ] }'
+    echo.
+  fi
 )
