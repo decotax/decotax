@@ -44,6 +44,7 @@ function initApp(firebaseConfig) {
         onClosed: () => {
           document.querySelector("#email").value = "";
           document.querySelector("#password").value = "";
+          clearError();
         }
       }
     }
@@ -66,10 +67,50 @@ function updateLoginStatus(user) {
   menu.classList.remove("logged-out");
   menu.classList.add(user ? "logged-in" : "logged-out");
 
+  hideProgressShade();
+  clearError();
+  clearBannerMessage();
+
+  document.querySelector("#email").value = "";
+  document.querySelector("#password").value = "";
+
+  if (location.search == "?logout") {
+    history.replaceState(null, null, "/");
+    if (!user) {
+      showBannerMessage("You've logged out.");
+    }
+  }
+}
+
+function hideProgressShade() {
   if (g_active_progress_shade) {
     g_active_progress_shade.style.display = "none";
     g_active_progress_shade = null;
   }
+}
+
+function clearError() {
+  const error_el = document.querySelector("#login-error");
+  error_el.style.display = "";
+}
+
+function clearBannerMessage() {
+  const banner_el = document.querySelector("#banner");
+  banner_el.style.display = "none";
+  banner_el.innerText = "";
+}
+
+function showError() {
+  const error_el = document.querySelector("#login-error");
+  error_el.style.display = "block";
+  error_el.innerText = "Failed to log in. Check that the email and password " +
+      "are entered correctly.";
+}
+
+function showBannerMessage(message) {
+  const banner_el = document.querySelector("#banner");
+  banner_el.style.display = "block";
+  banner_el.innerText = message;
 }
 
 function initLoginForm() {
@@ -81,14 +122,26 @@ function initLoginForm() {
       progress_shade.style.display = "block";
       g_active_progress_shade = progress_shade;
 
-      signInWithEmailAndPassword(g_auth, params.email, params.password);
+      (async () => {
+        try {
+          await signInWithEmailAndPassword(
+              g_auth, params.email, params.password);
+        } catch (e) {
+          hideProgressShade();
+          showError();
+        }
+      })();
     }
     e.preventDefault();
   });
 
   const logout_form = document.querySelector("#frm-logout");
   logout_form.addEventListener("submit", e => {
-    signOut(g_auth);
+    (async () => {
+      await signOut(g_auth);
+      history.replaceState(null, null, "/?logout");
+      location.reload();
+    })();
     e.preventDefault();
   });
 }

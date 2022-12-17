@@ -42,3 +42,10 @@ body {
 .button-br {
   background: #a44f2e;
 }
+
+#banner {
+  display: none;
+  background: #fff0c0;
+  padding: 5px;
+  margin: 0 8vw;
+}

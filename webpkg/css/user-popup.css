@@ -82,3 +82,11 @@
     outline-color: transparent;
   }
 }
+
+#login-error {
+  display: none;
+  background: #fffff4;
+  margin-bottom: 15px;
+  padding: 5px;
+  outline: 2px solid orange;
+}
