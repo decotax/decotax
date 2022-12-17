@@ -22,6 +22,11 @@ async function setupSecretLaunch() {
       return;
     }
 
+    if (location.hostname == "staging.deco.tax") {
+      fn_launch();
+      return;
+    }
+
     const check_cb = e => {
       if (launched)
         return;  // Only launch once.
