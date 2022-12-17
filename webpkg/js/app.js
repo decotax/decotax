@@ -40,6 +40,10 @@ function initApp(firebaseConfig) {
       observer: {
         onOpened: () => {
           document.querySelector("#email").focus();
+        },
+        onClosed: () => {
+          document.querySelector("#email").value = "";
+          document.querySelector("#password").value = "";
         }
       }
     }
@@ -51,8 +55,12 @@ function initApp(firebaseConfig) {
 function updateLoginStatus(user) {
   const menu = document.querySelector("#hdr-links");
   const user_label = document.querySelector("#hdr-user-label");
-  const label_text = user ? user.email : "Log in";
+
+  const label_text = user ? (user.displayName || user.email) : "Log in";
   user_label.firstChild.nodeValue = ` ${label_text}`;
+
+  const popup_user_label = document.querySelector("#popup-user-label");
+  popup_user_label.firstChild.nodeValue = user ? user.email : "user";
 
   menu.classList.remove("logged-in");
   menu.classList.remove("logged-out");
@@ -68,12 +76,13 @@ function initLoginForm() {
   const login_form = document.querySelector("#frm-login");
   const progress_shade = document.querySelector("#popup-user > .shade");
   login_form.addEventListener("submit", e => {
-    progress_shade.style.display = "block";
-    g_active_progress_shade = progress_shade;
+    const params = preValidate();
+    if (params) {
+      progress_shade.style.display = "block";
+      g_active_progress_shade = progress_shade;
 
-    const email = document.querySelector("#email").value;
-    const password = document.querySelector("#password").value;
-    signInWithEmailAndPassword(g_auth, email, password);
+      signInWithEmailAndPassword(g_auth, params.email, params.password);
+    }
     e.preventDefault();
   });
 
@@ -82,6 +91,35 @@ function initLoginForm() {
     signOut(g_auth);
     e.preventDefault();
   });
+}
+
+function preValidate() {
+  const email_el = document.querySelector("#email");
+  const password_el = document.querySelector("#password");
+
+  const email = email_el.value.trim();
+  const password = password_el.value;
+
+  const blank_field_err_fn = el => {
+    el.classList.remove("error-outline");
+    el.focus();
+    requestAnimationFrame(() => {
+      el.classList.add("error-outline");
+      const autoremove_fn = () => {
+        el.classList.remove("error-outline");
+        el.removeEventListener("animationend", autoremove_fn);
+      };
+      el.addEventListener("animationend", autoremove_fn);
+    });
+  }
+
+  if (!email) {
+    blank_field_err_fn(email_el);
+  } else if (!password) {
+    blank_field_err_fn(password_el);
+  } else {
+    return { email, password };
+  }
 }
 
 function initToolbox() {

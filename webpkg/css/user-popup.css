@@ -5,8 +5,12 @@
 #popup-user {
   right: -7px;
   width: 270px;
-  font: bold 10pt sans-serif;
-  color: #444;
+}
+
+@media (max-width: 359px) {
+  #popup-user {
+    right: -5px;
+  }
 }
 
 #frm-login, #frm-logout {
@@ -28,6 +32,8 @@
 #popup-user label {
   display: block;
   height: 56px;
+  font: bold 10pt sans-serif;
+  color: #444;
 }
 
 #email, #password {
@@ -47,9 +53,32 @@
 }
 
 .logged-in #popup-user {
-  width: 130px;
+  width: auto;
+  min-width: 130px;
 }
 
 .logged-in #popup-user input[type=submit] {
   margin-left: 20px;
+}
+
+#popup-user-label {
+  font: bold 10pt sans-serif;
+  color: #444;
+  padding: 10px;
+}
+
+.error-outline {
+  animation-name: outlinefade;
+  animation-duration: 1s;
+  animation: 1s linear outline-fade;
+  outline: 2px solid transparent;
+}
+
+@keyframes outline-fade {
+  from {
+    outline-color: red;
+  }
+  to {
+    outline-color: transparent;
+  }
 }
