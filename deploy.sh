@@ -62,6 +62,6 @@ EXISTING=$(
       --header "Content-Type: application/json" \
       --header "Authorization: Bearer $(cat $CLOUDFLARE_PURGE_TOKEN_FILE)" \
       --data '{ "files": [ "https://storage.googleapis.com/deco_tax_assets/main" ] }'
-    echo.
+    echo
   fi
 )
