@@ -7,13 +7,36 @@ function initHeader(link_configs) {
   g_menu = document.querySelector("#hdr-links");
   for (const link_config of link_configs)
     _setupLink(link_config);
+
+  document.addEventListener("keydown", e => {
+    if (e.keyCode == 27 /* Escape */)
+      closeHeaderPopups();
+  });
+  document.addEventListener("pointerdown", e => {
+    if (g_current_opened_link_config == null)
+      return;
+
+    let node = e.target;
+    while (node) {
+      const classList = node.classList;
+      if (classList && (
+          classList.contains("hdr-link") ||
+          classList.contains("hdr-popup"))) {
+        // Clicks on header links are handled in _setupLink.
+        // Clicks inside a popup should not dismiss the popup.
+        return;
+      }
+      node = node.parentNode;
+    }
+    closeHeaderPopups();
+  });
 }
 
 function _setupLink(link_config) {
   const { link_id, opened_class, observer } = link_config;
   const link_el = document.querySelector(link_id);
   link_el.addEventListener("click", e => {
-    const should_open =
+    const should_open = opened_class &&
         g_current_opened_link_config != link_config;
 
     closeHeaderPopups();

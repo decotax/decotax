@@ -22,8 +22,17 @@ function initApp(firebaseConfig) {
   onAuthStateChanged(g_auth, updateLoginStatus);
   initHeader([
     {
+      link_id: "#hdr-home"
+    },
+    {
+      link_id: "#hdr-files"
+    },
+    {
       link_id: "#hdr-toolbox",
       opened_class: "open-toolbox"
+    },
+    {
+      link_id: "#hdr-about"
     },
     {
       link_id: "#hdr-user",
