@@ -35,6 +35,7 @@ function initApp(firebaseConfig) {
   ]);
   g_auth = Login.init();
   initToolbox();
+  $("#hdr-home").addEventListener("click", goHome);
 }
 
 function initToolbox() {
@@ -44,6 +45,13 @@ function initToolbox() {
     launchBlankForms();
     e.preventDefault();
   });
+}
+
+function goHome() {
+  const app_el = $(".app");
+  const blank_forms_view = $(".view-blank-forms");
+  if (blank_forms_view)
+    app_el.removeChild(blank_forms_view);
 }
 
 async function launchBlankForms() {

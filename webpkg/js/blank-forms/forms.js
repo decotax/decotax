@@ -33,6 +33,11 @@ import "../../css/blank-forms.css";
 import g_forms_view_markup from "../../html-embed/blank-forms.html";
 
 async function showBlankForms(app, auth) {
+  const app_el = $(".app");
+  const old_view_root = $(".view-blank-forms");
+  if (old_view_root)
+    app_el.removeChild(old_view_root);
+
   const db = getFirestore(app);
   const q = query(
       collection(db, "dtmodules"),
@@ -49,8 +54,6 @@ async function showBlankForms(app, auth) {
   const view_root = document.createElement("div");
   view_root.classList.add("view-blank-forms");
   view_root.innerHTML = g_forms_view_markup;
-
-  const app_el = $(".app");
   app_el.appendChild(view_root);
 
   const upload_dlg = $("#dlg-upload");
