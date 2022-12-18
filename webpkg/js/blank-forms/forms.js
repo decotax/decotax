@@ -4,6 +4,7 @@
 
 import {  /* webpackMode: "eager" */
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
@@ -88,26 +89,39 @@ async function uploadNewBlankForm(auth, db) {
 
   const result = await fn_process({"uid": uid, "docId": docId});
 
-  console.log(result.data);
-
   if (result.data.error) {
     // Clean up.
     await deleteObject(storageRef);
     canvas_root.innerText = result.data.error;
     return;
   }
+  const page_count = result.data.page_count;
 
   // Finalize.
   await setDoc(newRef, {
     "name": "[new form]",
     "owner": uid,
-    "pdf": true
+    "pdf": true,
+    "page_count": page_count
   });
 
-  const page1_blob = await getBlob(ref(storage, `${path}.1`));
+  const page1_blob = await getBlob(ref(storage, `${path}.0`));
   const blob_url = URL.createObjectURL(page1_blob);
 
-  canvas_root.innerHTML = `<img src="${blob_url}">`;
+  canvas_root.innerHTML = `<img src="${blob_url}">` +
+      "<button>Delete</button>";
+
+  canvas_root.querySelector("button").addEventListener("click", () => {
+    canvas_root.innerHTML = '<div class="spinner">⌛</div>';
+    (async () => {
+      // TODO: parallelize?
+      await deleteDoc(doc(collection(db, "dtmodules"), docId));
+      for (var n = 0; n < page_count; n++)
+        await deleteObject(ref(storage, `${path}.${n}`));
+      deleteObject(ref(storage, path));
+      canvas_root.innerHTML = 'deleted';
+    })();
+  });
 }
 
 export { showBlankForms };
