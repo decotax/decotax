@@ -3,14 +3,14 @@
 let g_menu;
 let g_current_opened_link_config;
 
-function initHeader(link_configs) {
+function init(link_configs) {
   g_menu = document.querySelector("#hdr-links");
   for (const link_config of link_configs)
     _setupLink(link_config);
 
   document.addEventListener("keydown", e => {
     if (e.keyCode == 27 /* Escape */)
-      closeHeaderPopups();
+      closePopups();
   });
   document.addEventListener("pointerdown", e => {
     if (g_current_opened_link_config == null)
@@ -28,7 +28,7 @@ function initHeader(link_configs) {
       }
       node = node.parentNode;
     }
-    closeHeaderPopups();
+    closePopups();
   });
 }
 
@@ -39,7 +39,7 @@ function _setupLink(link_config) {
     const should_open = opened_class &&
         g_current_opened_link_config != link_config;
 
-    closeHeaderPopups();
+    closePopups();
 
     if (should_open) {
       g_menu.classList.add(opened_class);
@@ -52,7 +52,7 @@ function _setupLink(link_config) {
   });
 }
 
-function closeHeaderPopups() {
+function closePopups() {
   if (g_current_opened_link_config == null)
     return;
 
@@ -65,4 +65,4 @@ function closeHeaderPopups() {
     observer.onClosed();
 }
 
-export { initHeader, closeHeaderPopups };
+export { init, closePopups };
