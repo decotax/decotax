@@ -35,6 +35,13 @@ module.exports = env => { return {
         test: /\.js$/,
         enforce: 'pre',
         use: [ 'source-map-loader' ]
+      },
+      {
+        test: /\/html-embed\/.*\.html$/,
+        loader: 'html-loader',
+        options: {
+          minimize: { collapseWhitespace: true, removeComments: true }
+        }
       }
     ]
   },

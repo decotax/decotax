@@ -27,22 +27,7 @@ import { getCloudFunctionUrls } from "../fb-config.js";
 
 import "../../css/blank-forms.css";
 
-const g_forms_view_markup = [
-  '<form id="form-list" action="..">',
-    '<input type="radio" name="form-sel" id="foo" value="foo">',
-    '<label for="foo">Foo</label>',
-  '</form>',
-  '<button class="button-br" id="btn-frms-upload">',
-    'Upload new blank form',
-  '</button>',
-  '<dialog id="dlg-upload">',
-    '<form method="dialog">',
-      '<input type="file" id="dlg-upload-file" name="filename">',
-      '<input type="submit">',
-    '</form>',
-  '</dialog>',
-  '<div id="frm-canvas"></div>'
-].join("");
+import g_forms_view_markup from "../../html-embed/blank-forms.html";
 
 async function showBlankForms(app, auth) {
   const db = getFirestore(app);
