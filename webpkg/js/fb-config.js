@@ -1,7 +1,12 @@
 // Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
 
+// The firebase configuration and cloud function urls.
+
 function getFirebaseConfig() {
   return {
+    // It's ok for the API key to be public.
+    // https://firebase.google.com/docs/projects/api-keys
+
     apiKey: "AIzaSyA0up5zy1M_3dv8Ena0Av2y3Hy37ltTRS4",
     authDomain: "decotax.firebaseapp.com",
     projectId: "decotax",
@@ -20,6 +25,7 @@ function getCloudFunctionUrls() {
     }
   }
   else {
+    // In dev mode we run a local instance (see run.sh).
     return {
       "process-new-form": "http://localhost:8081/"
     }

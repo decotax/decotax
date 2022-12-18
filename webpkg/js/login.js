@@ -1,11 +1,15 @@
 // Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
 
+// Login and logout UI.
+
 import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut
 } from "firebase/auth";
+
+import { $ } from "./util.js";
 
 let g_auth;
 let g_active_progress_shade;
@@ -20,24 +24,24 @@ function init() {
 function getPopupObserver() {
   return {
     onOpened: () => {
-      document.querySelector("#email").focus();
+      $("#email").focus();
     },
     onClosed: () => {
-      document.querySelector("#email").value = "";
-      document.querySelector("#password").value = "";
+      $("#email").value = "";
+      $("#password").value = "";
       _clearError();
     }
   };
 }
 
 function _updateLoginStatus(user) {
-  const menu = document.querySelector("#hdr-links");
-  const user_label = document.querySelector("#hdr-user-label");
+  const menu = $("#hdr-links");
+  const user_label = $("#hdr-user-label");
 
   const label_text = user ? (user.displayName || user.email) : "Log in";
   user_label.firstChild.nodeValue = ` ${label_text}`;
 
-  const popup_user_label = document.querySelector("#popup-user-label");
+  const popup_user_label = $("#popup-user-label");
   popup_user_label.firstChild.nodeValue = user ? user.email : "user";
 
   menu.classList.remove("logged-in");
@@ -48,8 +52,8 @@ function _updateLoginStatus(user) {
   _clearError();
   _clearBannerMessage();
 
-  document.querySelector("#email").value = "";
-  document.querySelector("#password").value = "";
+  $("#email").value = "";
+  $("#password").value = "";
 
   if (location.search == "?logout") {
     history.replaceState(null, null, "/");
@@ -67,33 +71,33 @@ function _hideProgressShade() {
 }
 
 function _clearError() {
-  const error_el = document.querySelector("#login-error");
+  const error_el = $("#login-error");
   error_el.style.display = "";
 }
 
 function _clearBannerMessage() {
-  const banner_el = document.querySelector("#banner");
+  const banner_el = $("#banner");
   banner_el.style.display = "none";
   banner_el.innerText = "";
 }
 
 function _showError() {
-  const error_el = document.querySelector("#login-error");
+  const error_el = $("#login-error");
   error_el.style.display = "block";
   error_el.innerText = "Failed to log in. Check that the email and password " +
       "are entered correctly.";
 }
 
 function _showBannerMessage(message) {
-  const banner_el = document.querySelector("#banner");
+  const banner_el = $("#banner");
   banner_el.style.display = "block";
   banner_el.innerText = message;
 }
 
 
 function _initLoginForm() {
-  const login_form = document.querySelector("#frm-login");
-  const progress_shade = document.querySelector("#popup-user > .shade");
+  const login_form = $("#frm-login");
+  const progress_shade = $("#popup-user > .shade");
   login_form.addEventListener("submit", e => {
     const params = _preValidate();
     if (params) {
@@ -113,7 +117,7 @@ function _initLoginForm() {
     e.preventDefault();
   });
 
-  const logout_form = document.querySelector("#frm-logout");
+  const logout_form = $("#frm-logout");
   logout_form.addEventListener("submit", e => {
     (async () => {
       await signOut(g_auth);
@@ -125,8 +129,8 @@ function _initLoginForm() {
 }
 
 function _preValidate() {
-  const email_el = document.querySelector("#email");
-  const password_el = document.querySelector("#password");
+  const email_el = $("#email");
+  const password_el = $("#password");
 
   const email = email_el.value.trim();
   const password = password_el.value;

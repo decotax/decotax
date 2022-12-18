@@ -6,6 +6,7 @@ import { initializeApp } from "firebase/app";
 
 import * as Header from "./header.js";
 import * as Login from "./login.js";
+import { $ } from "./util.js";
 
 let g_app;
 let g_auth;
@@ -37,7 +38,7 @@ function initApp(firebaseConfig) {
 }
 
 function initToolbox() {
-  const btn = document.querySelector("#btn-blank-forms");
+  const btn = $("#btn-blank-forms");
   btn.addEventListener("click", e => {
     Header.closePopups();
     launchBlankForms();
@@ -46,7 +47,7 @@ function initToolbox() {
 }
 
 async function launchBlankForms() {
-  const main_spinner = document.querySelector(".app > .spinner");
+  const main_spinner = $(".app > .spinner");
   main_spinner.style.display = "block";
   const Forms = await import(
     /* webpackChunkName: "forms" */

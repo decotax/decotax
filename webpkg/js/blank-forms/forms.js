@@ -1,5 +1,7 @@
 // Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
 
+// The Blank Forms UI.
+
 import {  /* webpackMode: "eager" */
   collection,
   doc,
@@ -24,6 +26,7 @@ import {
 } from "firebase/functions";
 
 import { getCloudFunctionUrls } from "../fb-config.js";
+import { $ } from "../util.js";
 
 import "../../css/blank-forms.css";
 
@@ -47,12 +50,12 @@ async function showBlankForms(app, auth) {
   view_root.classList.add("view-blank-forms");
   view_root.innerHTML = g_forms_view_markup;
 
-  const app_el = document.querySelector(".app");
+  const app_el = $(".app");
   app_el.appendChild(view_root);
 
-  const upload_dlg = document.querySelector("#dlg-upload");
+  const upload_dlg = $("#dlg-upload");
 
-  const upload_btn = document.querySelector("#btn-frms-upload");
+  const upload_btn = $("#btn-frms-upload");
   upload_btn.addEventListener("click", () => {
     upload_dlg.showModal();
   });
@@ -62,7 +65,7 @@ async function showBlankForms(app, auth) {
 }
 
 async function uploadNewBlankForm(auth, db) {
-  const canvas_root = document.querySelector("#frm-canvas");
+  const canvas_root = $("#frm-canvas");
   canvas_root.innerHTML = '<div class="spinner">⌛</div>';
 
   const uid = auth.currentUser.uid;
@@ -73,7 +76,7 @@ async function uploadNewBlankForm(auth, db) {
   const path = `form/user/${uid}/${docId}`;
   const storageRef = ref(storage, path);
 
-  const file = document.querySelector("#dlg-upload-file").files[0];
+  const file = $("#dlg-upload-file").files[0];
   await uploadBytes(storageRef, file);
 
   const functions = getFunctions();

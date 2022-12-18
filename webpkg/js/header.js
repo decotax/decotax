@@ -1,10 +1,14 @@
 // Copyright 2022 DecoTax.  Licensed under AGPL; see COPYING file.
 
+// Opening and closing the header menus.
+
+import { $ } from "./util.js";
+
 let g_menu;
 let g_current_opened_link_config;
 
 function init(link_configs) {
-  g_menu = document.querySelector("#hdr-links");
+  g_menu = $("#hdr-links");
   for (const link_config of link_configs)
     _setupLink(link_config);
 
@@ -34,7 +38,7 @@ function init(link_configs) {
 
 function _setupLink(link_config) {
   const { link_id, opened_class, observer } = link_config;
-  const link_el = document.querySelector(link_id);
+  const link_el = $(link_id);
   link_el.addEventListener("click", e => {
     const should_open = opened_class &&
         g_current_opened_link_config != link_config;
