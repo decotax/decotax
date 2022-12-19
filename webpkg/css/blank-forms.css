@@ -2,6 +2,134 @@
 
 /* The Blank Forms UI. */
 
+.view-blank-forms {
+  position: relative;
+}
+
 #btn-frms-upload {
-  margin: 4px 0 2px 0;
+  margin: 15px 0 0 4px;
+}
+
+#dlg-upload:modal {
+  border-style: outset;
+  border-color: #89a;
+}
+
+#dlg-upload::backdrop {
+  background: #6894;
+}
+
+#dlg-upload form {
+  margin-top: 15px;
+}
+
+#dlg-upload-file::file-selector-button,
+#dlg-upload input[type=submit],
+#btn-frms-delete {
+  font-size: 11pt;
+  font-weight: bold;
+  border: 1px solid #1b1f234c;
+  border-radius: 6px;
+  box-shadow: #1b1f234c 2px 2px 2px;
+  cursor: pointer;
+  padding: 6px 16px;
+}
+
+#dlg-upload-file::file-selector-button {
+  margin-right: 10px;
+}
+
+#dlg-upload-file {
+  font: bold 10pt sans-serif;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+#dlg-upload input[type=submit] {
+  color: #fff;
+  margin-top: 10px;
+  background: #57a;
+}
+
+#dlg-upload-cancel {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+#dlg-upload label {
+  display: block;
+  height: 56px;
+}
+
+#dlg-upload-name {
+  display: block;
+  margin-top: 2px;
+  width: 255px;
+  font-size: 11pt;
+  padding: 4px;
+}
+
+#form-list {
+  border: 2px inset #ca9;
+  width: 200px;
+  height: calc(100vh - 150px);
+}
+
+#form-list > input[type=radio] {
+  visibility: hidden;
+  position: absolute;
+}
+
+#form-list > label {
+  display: block;
+  padding: 5px;
+  cursor: pointer;
+}
+
+#form-list > input[type=radio]:checked + label {
+  background: #666;
+  color: white;
+}
+
+#frm-canvas-panel {
+  position: absolute;
+  top: 0;
+  left: 220px;
+  width: 818px;
+}
+
+#frm-canvas {
+  width: 816px;
+  height: 1056px;
+  background: #eee;
+  border: 1px solid #ddd;
+  margin-bottom: 40px;
+}
+
+#frm-toolbar {
+  height: 45px;
+  text-align: center;
+  visibility: hidden;
+}
+
+#btn-frms-delete {
+  background: white;
+  position: absolute;
+  right: 0;
+}
+
+#frm-page-prev,
+#frm-page-next {
+  display: inline-block;
+  width: 32px;
+  height: 25px;
+  padding-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+#frm-canvas-panel > .spinner {
+  display: none;
 }

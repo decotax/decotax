@@ -2,17 +2,32 @@
 
      This is the Blank Forms view.
   -->
-<form id="form-list" action="..">
-  <input type="radio" name="form-sel" id="foo" value="foo">
-  <label for="foo">Foo</label>
-</form>
+<form id="form-list" action=".."></form>
 <button class="button-br" id="btn-frms-upload">
   Upload new blank form
 </button>
 <dialog id="dlg-upload">
+  Select a PDF file to upload.
   <form method="dialog">
-    <input type="file" id="dlg-upload-file" name="filename">
-    <input type="submit">
+    <input type="file" id="dlg-upload-file" name="filename"
+           accept="application/pdf">
+    <label for="dlg-upload-name">
+      Name of form (e.g. “Form 123”)
+      <input type="text" id="dlg-upload-name" name="formname">
+    </label>
+    <div style="text-align:right">
+      <a id="dlg-upload-cancel" href="..">Cancel</a>
+      <input type="submit" value="Upload">
+    </div>
   </form>
 </dialog>
-<div id="frm-canvas"></div>
+<div id="frm-canvas-panel">
+  <div class="spinner">⌛</div>
+  <div id="frm-toolbar">
+    <a id="frm-page-prev" href="..">&lt;</a>
+    Page <span id="frm-page">1</span>/<span id="frm-page-count">2</span>
+    <a id="frm-page-next" href="..">&gt;</a>
+    <button id="btn-frms-delete">🗑️</button>
+  </div>
+  <div id="frm-canvas">
+</div>

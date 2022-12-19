@@ -27,11 +27,14 @@ import {
 } from "firebase/functions";
 
 import { getCloudFunctionUrls } from "../fb-config.js";
-import { $ } from "../util.js";
+import { $, flashAndFocusField } from "../util.js";
 
 import "../../css/blank-forms.css";
 
 import g_forms_view_markup from "../../html-embed/blank-forms.html";
+
+let g_auth;
+let g_db;
 
 async function showBlankForms(app, auth) {
   const app_el = $(".app");
@@ -39,9 +42,10 @@ async function showBlankForms(app, auth) {
   if (old_view_root)
     app_el.removeChild(old_view_root);
 
-  const db = getFirestore(app);
+  g_db = getFirestore(app);
+  g_auth = auth;
   const q = query(
-      collection(db, "dtmodules"),
+      collection(g_db, "dtmodules"),
       where("owner", "==", auth.currentUser.uid),
       where("pdf", "==", true));
 
@@ -57,6 +61,10 @@ async function showBlankForms(app, auth) {
   view_root.innerHTML = g_forms_view_markup;
   app_el.appendChild(view_root);
 
+  _initUploadDialog();
+}
+
+function _initUploadDialog() {
   const upload_dlg = $("#dlg-upload");
 
   const upload_btn = $("#btn-frms-upload");
@@ -64,24 +72,58 @@ async function showBlankForms(app, auth) {
     upload_dlg.showModal();
   });
 
-  upload_dlg.querySelector("form").addEventListener(
-      "submit", () => { uploadNewBlankForm(auth, db); });
+  const form_el = upload_dlg.querySelector("form");
+  form_el.addEventListener("submit", e => {
+    const params = _preValidate();
+    if (params)
+      uploadNewBlankForm(params.file, params.name);
+    else
+      e.preventDefault();
+  });
+
+  $("#dlg-upload-cancel").addEventListener("click", e => {
+    _resetDialog();
+    upload_dlg.close();
+    e.preventDefault();
+  });
 }
 
-async function uploadNewBlankForm(auth, db) {
+function _resetDialog() {
+  $("#dlg-upload-file").value = "";
+  $("#dlg-upload-name").value = "";
+}
+
+function _preValidate() {
+  const file_el = $("#dlg-upload-file");
+  const file = file_el.files[0];
+
+  const name_el = $("#dlg-upload-name");
+  const name = name_el.value.trim();
+
+  if (!file)
+    flashAndFocusField(file_el);
+  else if (!name)
+    flashAndFocusField(name_el);
+  else if (!file.size || file.type != "application/pdf")
+    alert("That doesn't look like a valid PDF file.");
+  else
+    return { file, name };
+}
+
+async function uploadNewBlankForm(file, name) {
   const canvas_root = $("#frm-canvas");
   canvas_root.innerHTML = '<div class="spinner">⌛</div>';
 
-  const uid = auth.currentUser.uid;
-  const newRef = doc(collection(db, "dtmodules"));
+  const uid = g_auth.currentUser.uid;
+  const newRef = doc(collection(g_db, "dtmodules"));
 
   const storage = getStorage();
   const docId = newRef.id;
   const path = `form/user/${uid}/${docId}`;
   const storageRef = ref(storage, path);
 
-  const file = $("#dlg-upload-file").files[0];
   await uploadBytes(storageRef, file);
+  _resetDialog();
 
   const functions = getFunctions();
   const fn_url = getCloudFunctionUrls()["process-new-form"];
@@ -99,7 +141,7 @@ async function uploadNewBlankForm(auth, db) {
 
   // Finalize.
   await setDoc(newRef, {
-    "name": "[new form]",
+    "name": name,
     "owner": uid,
     "pdf": true,
     "page_count": page_count
@@ -115,7 +157,7 @@ async function uploadNewBlankForm(auth, db) {
     canvas_root.innerHTML = '<div class="spinner">⌛</div>';
     (async () => {
       // TODO: parallelize?
-      await deleteDoc(doc(collection(db, "dtmodules"), docId));
+      await deleteDoc(doc(collection(g_db, "dtmodules"), docId));
       for (var n = 0; n < page_count; n++)
         await deleteObject(ref(storage, `${path}.${n}`));
       deleteObject(ref(storage, path));
@@ -123,5 +165,8 @@ async function uploadNewBlankForm(auth, db) {
     })();
   });
 }
+
+// <input type="radio" name="form-sel" id="foo" value="foo">
+// <label for="foo">Foo</label>
 
 export { showBlankForms };

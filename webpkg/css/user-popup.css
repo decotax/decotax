@@ -70,17 +70,13 @@
 .error-outline {
   animation-name: outlinefade;
   animation-duration: 1s;
-  animation: 1s linear outline-fade;
+  animation: 1s linear error-outline-fade;
   outline: 2px solid transparent;
 }
 
-@keyframes outline-fade {
-  from {
-    outline-color: red;
-  }
-  to {
-    outline-color: transparent;
-  }
+@keyframes error-outline-fade {
+  from { outline-color: orangered; }
+  to { outline-color: transparent; }
 }
 
 #login-error {

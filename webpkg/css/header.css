@@ -140,6 +140,7 @@ a.hdr-link:hover:not(#hdr-home) {
 .hdr-popup {
   display: none;
   position: absolute;
+  z-index: 1;
   top: 45px;
   padding: 10px 15px;
   border: 2px solid #f2f7ff;

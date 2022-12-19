@@ -6,4 +6,17 @@ function $(selector) {
   return document.querySelector(selector);
 }
 
-export { $ };
+function flashAndFocusField(el) {
+  el.classList.remove("error-outline");
+  el.focus();
+  requestAnimationFrame(() => {
+    el.classList.add("error-outline");
+    const autoremove_fn = () => {
+      el.classList.remove("error-outline");
+      el.removeEventListener("animationend", autoremove_fn);
+    };
+    el.addEventListener("animationend", autoremove_fn);
+  });
+}
+
+export { $, flashAndFocusField };

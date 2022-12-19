@@ -9,7 +9,7 @@ import {
   signOut
 } from "firebase/auth";
 
-import { $ } from "./util.js";
+import { $, flashAndFocusField } from "./util.js";
 
 let g_auth;
 let g_active_progress_shade;
@@ -135,23 +135,10 @@ function _preValidate() {
   const email = email_el.value.trim();
   const password = password_el.value;
 
-  const blank_field_err_fn = el => {
-    el.classList.remove("error-outline");
-    el.focus();
-    requestAnimationFrame(() => {
-      el.classList.add("error-outline");
-      const autoremove_fn = () => {
-        el.classList.remove("error-outline");
-        el.removeEventListener("animationend", autoremove_fn);
-      };
-      el.addEventListener("animationend", autoremove_fn);
-    });
-  }
-
   if (!email) {
-    blank_field_err_fn(email_el);
+    flashAndFocusField(email_el);
   } else if (!password) {
-    blank_field_err_fn(password_el);
+    flashAndFocusField(password_el);
   } else {
     return { email, password };
   }
