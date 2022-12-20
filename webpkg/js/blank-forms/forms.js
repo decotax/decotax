@@ -35,14 +35,24 @@ import g_forms_view_markup from "../../html-embed/blank-forms.html";
 
 let g_auth;
 let g_db;
+let g_storage;
+
+let g_forms;
+let g_forms_by_id;
+let g_current_form;
+let g_current_page;
 
 async function showBlankForms(app, auth) {
+  g_forms = [];
+  g_forms_by_id = {};
+
   const app_el = $(".app");
   const old_view_root = $(".view-blank-forms");
   if (old_view_root)
     app_el.removeChild(old_view_root);
 
   g_db = getFirestore(app);
+  g_storage = getStorage();
   g_auth = auth;
   const q = query(
       collection(g_db, "dtmodules"),
@@ -50,18 +60,156 @@ async function showBlankForms(app, auth) {
       where("pdf", "==", true));
 
   const qSnapshot = await getDocs(q);
-  const outLines = [];
   qSnapshot.forEach(doc => {
-    outLines.push(`${doc.id} : ${doc.get("name")}`);
+    const form = {
+      id: doc.id,
+      name: doc.get("name"),
+      page_count: doc.get("page_count"),
+      page_blobs: []
+    };
+    g_forms_by_id[doc.id] = form;
+    g_forms.push(form);
   });
-  console.log(outLines.join("\n"));
+  g_forms.sort((f1, f2) => f1.name > f2.name);
 
   const view_root = document.createElement("div");
   view_root.classList.add("view-blank-forms");
   view_root.innerHTML = g_forms_view_markup;
   app_el.appendChild(view_root);
 
+  g_forms.forEach(form => { _addDomForFormListItem(form, false); });
+  _initToolbar();
   _initUploadDialog();
+}
+
+function _setCanvasBanner(text) {
+  const banner = $("#frm-canvas-panel .banner");
+  banner.innerText = text;
+  banner.style.display = text ? "block" : "none";
+}
+
+function _addDomForFormListItem(form, setChecked) {
+  const formListEl = $("#form-list");
+
+  const btnId = `form-sel-${form.id}`;
+  const radioBtn = document.createElement("input");
+  radioBtn.setAttribute("type", "radio");
+  radioBtn.setAttribute("name", "form-sel");
+  radioBtn.setAttribute("id", btnId);
+  radioBtn.setAttribute("value", form.id);
+
+  const labelEl = document.createElement("label");
+  labelEl.setAttribute("for", btnId);
+  labelEl.innerText = form.name;
+
+  formListEl.appendChild(radioBtn);
+  formListEl.appendChild(labelEl);
+
+  radioBtn.addEventListener("change", e => {
+    if (e.target && e.target.checked) {
+      form = g_forms_by_id[e.target.value];
+
+      // Null page_count means a new form still being processed.
+      // Don't blow up if user switched away and back.
+      // TODO: improve UX here.
+      if (form.page_count != null)
+        _showForm(form);
+    }
+  });
+
+  if (setChecked)
+    radioBtn.checked = true;
+}
+
+function _removeDomForFormListItem(docId) {
+  const formListEl = $("#form-list");
+  const radioBtn = $(`#form-sel-${docId}`);
+
+  // Remove <label> and <input>.
+  formListEl.removeChild(radioBtn.nextSibling);
+  formListEl.removeChild(radioBtn);
+}
+
+async function _showForm(form) {
+  g_current_page = 0;
+  g_current_form = form;
+  _setCanvasBanner("");
+
+  $("#frm-page").innerText = "1";
+  $("#frm-page-count").innerText = String(g_current_form.page_count);
+  $("#frm-toolbar").style.visibility = "visible";
+
+  await _showPage(0);
+  $("#frm-canvas").style.display = "block";
+}
+
+async function _showPage(page_num) {
+  g_current_page = page_num;
+  $("#frm-page").innerText = String(page_num + 1);
+
+  const uid = g_auth.currentUser.uid;
+  const blobs = g_current_form["page_blobs"];
+  let blob_url = blobs[page_num];
+
+  if (!blob_url) {
+    const spinner = $("#frm-canvas-panel .spinner");
+    spinner.style.display = "block";
+
+    const path = `form/user/${uid}/${g_current_form.id}`;
+    const blob = await getBlob(ref(g_storage, `${path}.${page_num}`));
+    blob_url = URL.createObjectURL(blob);
+    blobs[page_num] = blob_url;
+
+    spinner.style.display = "none";
+  }
+
+  $("#frm-canvas > img").setAttribute("src", blob_url);
+}
+
+function _initToolbar() {
+  $("#frm-page-prev").addEventListener("click", e => {
+    if (g_current_page > 0)
+      _showPage(g_current_page - 1);
+    e.preventDefault();
+  });
+
+  $("#frm-page-next").addEventListener("click", e => {
+    if (g_current_page < g_current_form.page_count - 1)
+      _showPage(g_current_page + 1);
+    e.preventDefault();
+  });
+
+  $("#btn-frms-delete").addEventListener("click", async () => {
+    _deleteForm();
+  });
+}
+
+async function _deleteForm() {
+  const spinner = $("#frm-canvas-panel .spinner");
+  spinner.style.display = "block";
+
+  const uid = g_auth.currentUser.uid;
+  const docId = g_current_form.id;
+  const pageCount = g_current_form.page_count;
+  const name = g_current_form.name;
+
+  const path = `form/user/${uid}/${docId}`;
+
+  // TODO: parallelize?
+  await deleteDoc(doc(collection(g_db, "dtmodules"), docId));
+  for (var n = 0; n < pageCount; n++)
+    await deleteObject(ref(g_storage, `${path}.${n}`));
+  deleteObject(ref(g_storage, path));
+
+  spinner.style.display = "none";
+  g_current_form = null;
+  g_current_page = null;
+  $("#frm-toolbar").style.visibility = "hidden";
+  $("#frm-canvas > img").removeAttribute("src");
+  $("#frm-canvas").style.display = "none";
+
+  _setCanvasBanner(`Deleted “${name}”.`);
+  _removeDomForFormListItem(docId);
 }
 
 function _initUploadDialog() {
@@ -111,16 +259,28 @@ function _preValidate() {
 }
 
 async function uploadNewBlankForm(file, name) {
-  const canvas_root = $("#frm-canvas");
-  canvas_root.innerHTML = '<div class="spinner">⌛</div>';
+  const spinner = $("#frm-canvas-panel .spinner");
+  spinner.style.display = "block";
 
   const uid = g_auth.currentUser.uid;
   const newRef = doc(collection(g_db, "dtmodules"));
 
-  const storage = getStorage();
   const docId = newRef.id;
   const path = `form/user/${uid}/${docId}`;
-  const storageRef = ref(storage, path);
+  const storageRef = ref(g_storage, path);
+
+  const form = {
+    id: docId,
+    name: name,
+    page_count: null,
+    page_blobs: []
+  };
+  g_forms.push(form);
+  g_forms_by_id[docId] = form;
+  _addDomForFormListItem(form, true);
+  _setCanvasBanner("");
+  $("#frm-toolbar").style.visibility = "hidden";
+  $("#frm-canvas").style.display = "none";
 
   await uploadBytes(storageRef, file);
   _resetDialog();
@@ -134,39 +294,26 @@ async function uploadNewBlankForm(file, name) {
   if (result.data.error) {
     // Clean up.
     await deleteObject(storageRef);
-    canvas_root.innerText = result.data.error;
+    _setCanvasBanner(
+        `Something's wrong with this PDF file (${file.name}).\n\n` +
+        `The server said:\n${result.data.error}\n\n` +
+        "Try uploading a different file.");
+    console.log(file);
+    _removeDomForFormListItem(docId);
+    spinner.style.display = "none";
     return;
   }
-  const page_count = result.data.page_count;
+  form.page_count = result.data.page_count;
 
   // Finalize.
   await setDoc(newRef, {
     "name": name,
     "owner": uid,
     "pdf": true,
-    "page_count": page_count
+    "page_count": form.page_count
   });
 
-  const page1_blob = await getBlob(ref(storage, `${path}.0`));
-  const blob_url = URL.createObjectURL(page1_blob);
-
-  canvas_root.innerHTML = `<img src="${blob_url}">` +
-      "<button>Delete</button>";
-
-  canvas_root.querySelector("button").addEventListener("click", () => {
-    canvas_root.innerHTML = '<div class="spinner">⌛</div>';
-    (async () => {
-      // TODO: parallelize?
-      await deleteDoc(doc(collection(g_db, "dtmodules"), docId));
-      for (var n = 0; n < page_count; n++)
-        await deleteObject(ref(storage, `${path}.${n}`));
-      deleteObject(ref(storage, path));
-      canvas_root.innerHTML = 'deleted';
-    })();
-  });
+  _showForm(form);
 }
-
-// <input type="radio" name="form-sel" id="foo" value="foo">
-// <label for="foo">Foo</label>
 
 export { showBlankForms };

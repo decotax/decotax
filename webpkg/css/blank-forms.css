@@ -124,12 +124,27 @@
   width: 32px;
   height: 25px;
   padding-top: 5px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   text-decoration: none;
   margin: 0 5px;
+  user-select: none;
+}
+
+#frm-page-prev:hover,
+#frm-page-next:hover {
+  outline: 1px solid #e0e0e0;
+}
+
+#frm-page-prev:active,
+#frm-page-next:active {
+  color: black;
+  background: #eee;
 }
 
 #frm-canvas-panel > .spinner {
+  display: none;
+}
+
+#frm-canvas {
   display: none;
 }
