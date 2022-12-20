@@ -28,6 +28,7 @@ import {
 
 import { getCloudFunctionUrls } from "../fb-config.js";
 import { $, flashAndFocusField } from "../util.js";
+import * as Views from "../views.js";
 
 import "../../css/blank-forms.css";
 
@@ -45,11 +46,6 @@ let g_current_page;
 async function showBlankForms(app, auth) {
   g_forms = [];
   g_forms_by_id = {};
-
-  const app_el = $(".app");
-  const old_view_root = $(".view-blank-forms");
-  if (old_view_root)
-    app_el.removeChild(old_view_root);
 
   g_db = getFirestore(app);
   g_storage = getStorage();
@@ -75,11 +71,15 @@ async function showBlankForms(app, auth) {
   const view_root = document.createElement("div");
   view_root.classList.add("view-blank-forms");
   view_root.innerHTML = g_forms_view_markup;
-  app_el.appendChild(view_root);
+  Views.setView(view_root);
 
-  g_forms.forEach(form => { _addDomForFormListItem(form, false); });
+  g_forms.forEach(form => {
+    _addDomForFormListItem(form, false);
+  });
   _initToolbar();
   _initUploadDialog();
+
+  return view_root;
 }
 
 function _setCanvasBanner(text) {

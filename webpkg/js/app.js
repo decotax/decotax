@@ -7,6 +7,7 @@ import { initializeApp } from "firebase/app";
 import * as Header from "./header.js";
 import * as Login from "./login.js";
 import { $ } from "./util.js";
+import * as Views from "./views.js";
 
 let g_app;
 let g_auth;
@@ -36,6 +37,7 @@ function initApp(firebaseConfig) {
   g_auth = Login.init();
   initToolbox();
   $("#hdr-home").addEventListener("click", goHome);
+  Views.init();
 }
 
 function initToolbox() {
@@ -48,20 +50,18 @@ function initToolbox() {
 }
 
 function goHome() {
-  const app_el = $(".app");
-  const blank_forms_view = $(".view-blank-forms");
-  if (blank_forms_view)
-    app_el.removeChild(blank_forms_view);
+  const view = document.createElement("div");
+  view.classList.add("view-home");
+  view.innerText = "DecoTax is under construction.";
+  Views.setView(view);
 }
 
 async function launchBlankForms() {
-  const main_spinner = $(".app > .spinner");
-  main_spinner.style.display = "block";
+  Views.spin();
   const Forms = await import(
     /* webpackChunkName: "forms" */
     "./blank-forms/forms.js");
   await Forms.showBlankForms(g_app, g_auth);
-  main_spinner.style.display = "none";
 }
 
 export { initApp };
