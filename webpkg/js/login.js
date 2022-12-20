@@ -50,7 +50,7 @@ function _updateLoginStatus(user) {
 
   _hideProgressShade();
   _clearError();
-  _clearBannerMessage();
+  clearBannerMessage();
 
   $("#email").value = "";
   $("#password").value = "";
@@ -75,7 +75,8 @@ function _clearError() {
   error_el.style.display = "";
 }
 
-function _clearBannerMessage() {
+// TODO: This belongs somewhere else.
+function clearBannerMessage() {
   const banner_el = $("#banner");
   banner_el.style.display = "none";
   banner_el.innerText = "";
@@ -144,4 +145,4 @@ function _preValidate() {
   }
 }
 
-export { init, getPopupObserver };
+export { init, getPopupObserver, clearBannerMessage };

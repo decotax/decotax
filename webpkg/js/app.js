@@ -54,6 +54,7 @@ function goHome() {
   view.classList.add("view-home");
   view.innerText = "DecoTax is under construction.";
   Views.setView(view);
+  Login.clearBannerMessage();
 }
 
 async function launchBlankForms() {
