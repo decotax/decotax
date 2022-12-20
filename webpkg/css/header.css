@@ -7,7 +7,6 @@
 /* The UI is designed for minimum 320px screens (e.g. iPhone SE). */
 
 #viewport {
-  display: none;
   position: absolute;
   left: 7px;
   right: 7px;
