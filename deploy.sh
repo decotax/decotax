@@ -63,5 +63,7 @@ EXISTING=$(
       --header "Authorization: Bearer $(cat $CLOUDFLARE_PURGE_TOKEN_FILE)" \
       --data '{ "files": [ "https://storage.googleapis.com/deco_tax_assets/main" ] }'
     echo
+  else
+    echo "Warning: not purging Cloudflare cache"
   fi
 )
