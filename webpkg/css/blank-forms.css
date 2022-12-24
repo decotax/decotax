@@ -73,6 +73,7 @@
   border: 2px inset #ca9;
   width: 200px;
   height: calc(100vh - 150px);
+  min-height: 200px;
 }
 
 #form-list > input[type=radio] {
