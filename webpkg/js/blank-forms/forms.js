@@ -182,6 +182,12 @@ function _initToolbar() {
   $("#btn-frms-delete").addEventListener("click", async () => {
     _deleteForm();
   });
+
+  // Temporary.
+  $("#btn-frms-add-field").addEventListener("click", async () => {
+    const result = await dragNewRect();
+    console.log(result.rect);
+  });
 }
 
 async function _deleteForm() {
@@ -410,13 +416,6 @@ async function dragNewRect() {
     canvas_el.addEventListener("pointermove", pointermove_fn);
     canvas_el.addEventListener("pointerup", pointerup_fn);
   });
-}
-
-window['dragNewRect'] = () => {
-  (async () => {
-    const rect = await dragNewRect();
-    console.log(rect);
-  })();
 }
 
 export { showBlankForms };
