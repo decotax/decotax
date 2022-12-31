@@ -316,4 +316,107 @@ async function uploadNewBlankForm(file, name) {
   _showForm(form);
 }
 
+class Rect {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  positionElement(el, border_thickness) {
+    const dim_adjust = border_thickness * 2;
+    const el_style = el.style;
+
+    const css_width = Math.max(this.width - dim_adjust, 0);
+    const css_height = Math.max(this.height - dim_adjust, 0);
+
+    el_style.left = `${this.x}px`;
+    el_style.top = `${this.y}px`;
+    el_style.width = `${css_width}px`;
+    el_style.height = `${css_height}px`;
+  }
+
+  static fromCorners(start_point, end_point) {
+    const x1 = start_point.x,
+          y1 = start_point.y,
+          x2 = end_point.x,
+          y2 = end_point.y;
+
+    return new Rect(
+        x1 <= x2 ? x1 : x2,
+        y1 <= y2 ? y1 : y2,
+        Math.abs(x2 - x1) + 1,
+        Math.abs(y2 - y1) + 1);
+  }
+}
+
+async function dragNewRect() {
+  const canvas_el = $("#frm-canvas");
+  canvas_el.style.cursor = "crosshair";
+
+  const get_local_point = e => {
+    const base_rect = canvas_el.getBoundingClientRect();
+    return {
+      x: e.clientX - base_rect.x,
+      y: e.clientY - base_rect.y
+    };
+  };
+
+  const start_params = await new Promise(resolve => {
+    const pointerdown_fn = e => {
+      const pointer_id = e.pointerId;
+      canvas_el.setPointerCapture(pointer_id);
+
+      const start_point = get_local_point(e);
+      const rect = Rect.fromCorners(start_point, start_point);
+
+      const field_el = document.createElement("div");
+      field_el.setAttribute("class", "frm-field");
+      rect.positionElement(field_el, 1);
+      canvas_el.appendChild(field_el);
+
+      resolve({start_point, pointer_id, field_el});
+
+      canvas_el.removeEventListener("pointerdown", pointerdown_fn);
+      e.preventDefault();
+    };
+    canvas_el.addEventListener("pointerdown", pointerdown_fn);
+  });
+
+  return await new Promise(resolve => {
+    const pointermove_fn = e => {
+      const end_point = get_local_point(e);
+      const rect = Rect.fromCorners(start_params.start_point, end_point);
+      rect.positionElement(start_params.field_el, 1);
+      e.preventDefault();
+    };
+
+    const pointerup_fn = e => {
+      const end_point = get_local_point(e);
+      const rect = Rect.fromCorners(start_params.start_point, end_point);
+      const field_el = start_params.field_el;
+      rect.positionElement(field_el, 1);
+
+      resolve({rect, field_el});
+
+      canvas_el.releasePointerCapture(start_params.pointer_id);
+      canvas_el.removeEventListener("pointermove", pointermove_fn);
+      canvas_el.removeEventListener("pointerup", pointerup_fn);
+      canvas_el.style.cursor = "";
+      e.preventDefault();
+    };
+
+    canvas_el.addEventListener("pointermove", pointermove_fn);
+    canvas_el.addEventListener("pointerup", pointerup_fn);
+  });
+}
+
+window['dragNewRect'] = () => {
+  (async () => {
+    const rect = await dragNewRect();
+    console.log(rect);
+  })();
+}
+
 export { showBlankForms };

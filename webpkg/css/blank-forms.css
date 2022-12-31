@@ -99,11 +99,15 @@
 }
 
 #frm-canvas {
+  position: relative;
   width: 816px;
   height: 1056px;
   background: #eee;
-  border: 1px solid #ddd;
-  margin-bottom: 40px;
+  outline: 1px solid #ddd;
+  left: 1px;
+  top: 1px;
+  margin-bottom: 41px;
+  display: none;
 }
 
 #frm-toolbar {
@@ -145,6 +149,8 @@
   display: none;
 }
 
-#frm-canvas {
-  display: none;
+.frm-field {
+  position: absolute;
+  border: 1px solid blue;
+  background: #0000ff04;
 }
