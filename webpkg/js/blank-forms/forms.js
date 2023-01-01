@@ -40,6 +40,9 @@ let g_storage;
 
 let g_forms;
 let g_forms_by_id;
+
+let g_view_root;
+
 let g_current_form;
 let g_current_page;
 
@@ -72,11 +75,13 @@ async function showBlankForms(app, auth) {
   view_root.classList.add("view-blank-forms");
   view_root.innerHTML = g_forms_view_markup;
   Views.setView(view_root);
+  g_view_root = view_root;
 
   g_forms.forEach(form => {
     _addDomForFormListItem(form, false);
   });
   _initToolbar();
+  _initEditPanel();
   _initUploadDialog();
 
   return view_root;
@@ -167,6 +172,11 @@ async function _showPage(page_num) {
 }
 
 function _initToolbar() {
+  $("#frm-return").addEventListener("click", e => {
+    g_view_root.classList.remove("edit");
+    e.preventDefault();
+  });
+
   $("#frm-page-prev").addEventListener("click", e => {
     if (g_current_page > 0)
       _showPage(g_current_page - 1);
@@ -179,10 +189,17 @@ function _initToolbar() {
     e.preventDefault();
   });
 
+  $("#frm-edit").addEventListener("click", e => {
+    g_view_root.classList.add("edit");
+    e.preventDefault();
+  });
+
   $("#btn-frms-delete").addEventListener("click", async () => {
     _deleteForm();
   });
+}
 
+function _initEditPanel() {
   // Temporary.
   $("#btn-frms-add-field").addEventListener("click", async () => {
     const result = await dragNewRect();

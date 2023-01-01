@@ -69,9 +69,16 @@
   padding: 4px;
 }
 
+#frm-list-panel {
+  display: inline-block;
+  vertical-align: top;
+  width: 200px;
+  margin-right: 17px;
+}
+
 #form-list {
   border: 2px inset #ca9;
-  width: 200px;
+  width: 196px;
   height: calc(100vh - 150px);
   min-height: 200px;
 }
@@ -93,10 +100,11 @@
 }
 
 #frm-canvas-panel {
-  position: absolute;
-  top: 0;
-  left: 220px;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
   width: 818px;
+  margin-right: 17px;
 }
 
 #frm-canvas {
@@ -117,12 +125,19 @@
   visibility: hidden;
 }
 
+#frm-edit {
+  position: absolute;
+  right: 70px;
+  top: 5px;
+}
+
 #btn-frms-delete {
   background: white;
   position: absolute;
   right: 0;
 }
 
+#frm-return,
 #frm-page-prev,
 #frm-page-next {
   display: inline-block;
@@ -133,25 +148,64 @@
   text-decoration: none;
   margin: 0 5px;
   user-select: none;
+  color: black;
 }
 
-#frm-page-prev:hover,
-#frm-page-next:hover {
+#frm-return {
+  margin: 0;
   outline: 1px solid #e0e0e0;
 }
 
+#frm-return:hover,
+#frm-page-prev:hover,
+#frm-page-next:hover {
+  outline: 1px solid #d0d0d0;
+}
+
+#frm-return:active,
 #frm-page-prev:active,
 #frm-page-next:active {
   color: black;
   background: #eee;
 }
 
+#frm-return {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+
 #frm-canvas-panel > .spinner {
   display: none;
+  margin-left: 40px;
 }
 
 .frm-field {
   position: absolute;
   border: 1px solid blue;
   background: #0000ff04;
+}
+
+#frm-edit-panel {
+  min-width: 200px;
+  display: none;
+}
+
+.view-blank-forms.edit > #frm-list-panel {
+  display: none;
+}
+
+.view-blank-forms.edit > #frm-edit-panel {
+  display: inline-block;
+}
+
+.view-blank-forms.edit #frm-return {
+  display: inline-block;
+}
+
+.view-blank-forms.edit #btn-frms-delete,
+.view-blank-forms.edit #frm-edit {
+  display: none;
 }
