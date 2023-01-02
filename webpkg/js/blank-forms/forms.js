@@ -52,7 +52,6 @@ async function showBlankForms(app, auth) {
   g_forms_by_id = {};
 
   g_db = getFirestore(app);
-  Fields.init(g_db);
   g_storage = getStorage();
   g_auth = auth;
   const q = query(
@@ -66,12 +65,14 @@ async function showBlankForms(app, auth) {
       id: doc.id,
       name: doc.get("name"),
       page_count: doc.get("page_count"),
-      page_blobs: []
+      page_blobs: [],
+      fields: doc.get("fields")
     };
     g_forms_by_id[doc.id] = form;
     g_forms.push(form);
   });
-  g_forms.sort((f1, f2) => f1.name > f2.name);
+  g_forms.sort((f1, f2) =>
+      f1.name > f2.name ? 1 : (f1.name < f2.name ? -1 : 0));
 
   const view_root = document.createElement("div");
   view_root.classList.add("view-blank-forms");
@@ -141,6 +142,7 @@ async function _showForm(form) {
   g_current_page = 0;
   g_current_form = form;
   _setCanvasBanner("");
+  Fields.reset();
 
   $("#frm-page").innerText = "1";
   $("#frm-page-count").innerText = String(g_current_form.page_count);
@@ -148,7 +150,7 @@ async function _showForm(form) {
 
   await _showPage(0);
   $("#frm-canvas").style.display = "block";
-  Fields.onSwitchForms(g_current_form.id);
+  Fields.initForForm(g_current_form, g_db);
 }
 
 async function _showPage(page_num) {
@@ -172,6 +174,7 @@ async function _showPage(page_num) {
   }
 
   $("#frm-canvas > img").setAttribute("src", blob_url);
+  Fields.onChangePage(page_num);
 }
 
 function _initToolbar() {
@@ -340,41 +343,6 @@ async function uploadNewBlankForm(file, name) {
   _showForm(form);
 }
 
-class Rect {
-  constructor(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  }
-
-  positionElement(el, border_thickness) {
-    const dim_adjust = border_thickness * 2;
-    const el_style = el.style;
-
-    const css_width = Math.max(this.width - dim_adjust, 0);
-    const css_height = Math.max(this.height - dim_adjust, 0);
-
-    el_style.left = `${this.x}px`;
-    el_style.top = `${this.y}px`;
-    el_style.width = `${css_width}px`;
-    el_style.height = `${css_height}px`;
-  }
-
-  static fromCorners(start_point, end_point) {
-    const x1 = start_point.x,
-          y1 = start_point.y,
-          x2 = end_point.x,
-          y2 = end_point.y;
-
-    return new Rect(
-        x1 <= x2 ? x1 : x2,
-        y1 <= y2 ? y1 : y2,
-        Math.abs(x2 - x1) + 1,
-        Math.abs(y2 - y1) + 1);
-  }
-}
-
 async function dragNewRect() {
   const canvas_el = $("#frm-canvas");
   canvas_el.style.cursor = "crosshair";
@@ -393,7 +361,7 @@ async function dragNewRect() {
       canvas_el.setPointerCapture(pointer_id);
 
       const start_point = get_local_point(e);
-      const rect = Rect.fromCorners(start_point, start_point);
+      const rect = Fields.Rect.fromCorners(start_point, start_point);
 
       const field_el = document.createElement("div");
       field_el.setAttribute("class", "frm-field");
@@ -411,14 +379,14 @@ async function dragNewRect() {
   return await new Promise(resolve => {
     const pointermove_fn = e => {
       const end_point = get_local_point(e);
-      const rect = Rect.fromCorners(start_params.start_point, end_point);
+      const rect = Fields.Rect.fromCorners(start_params.start_point, end_point);
       rect.positionElement(start_params.field_el, 1);
       e.preventDefault();
     };
 
     const pointerup_fn = e => {
       const end_point = get_local_point(e);
-      const rect = Rect.fromCorners(start_params.start_point, end_point);
+      const rect = Fields.Rect.fromCorners(start_params.start_point, end_point);
       const field_el = start_params.field_el;
       rect.positionElement(field_el, 1);
 
