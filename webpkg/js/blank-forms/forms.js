@@ -2,7 +2,7 @@
 
 // The Blank Forms UI.
 
-import {  /* webpackMode: "eager" */
+import {
   collection,
   deleteDoc,
   doc,
@@ -28,6 +28,7 @@ import {
 
 import { getCloudFunctionUrls } from "../fb-config.js";
 import { $, flashAndFocusField } from "../util.js";
+import * as Fields from "./fields.js";
 import * as Views from "../views.js";
 
 import "../../css/blank-forms.css";
@@ -51,6 +52,7 @@ async function showBlankForms(app, auth) {
   g_forms_by_id = {};
 
   g_db = getFirestore(app);
+  Fields.init(g_db);
   g_storage = getStorage();
   g_auth = auth;
   const q = query(
@@ -146,6 +148,7 @@ async function _showForm(form) {
 
   await _showPage(0);
   $("#frm-canvas").style.display = "block";
+  Fields.onSwitchForms(g_current_form.id);
 }
 
 async function _showPage(page_num) {
@@ -153,7 +156,7 @@ async function _showPage(page_num) {
   $("#frm-page").innerText = String(page_num + 1);
 
   const uid = g_auth.currentUser.uid;
-  const blobs = g_current_form["page_blobs"];
+  const blobs = g_current_form.page_blobs;
   let blob_url = blobs[page_num];
 
   if (!blob_url) {
@@ -200,10 +203,8 @@ function _initToolbar() {
 }
 
 function _initEditPanel() {
-  // Temporary.
   $("#btn-frms-add-field").addEventListener("click", async () => {
-    const result = await dragNewRect();
-    console.log(result.rect);
+    Fields.add(await dragNewRect());
   });
 }
 
