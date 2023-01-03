@@ -191,6 +191,10 @@
   background: #0000ff28;
 }
 
+.frm-field.selected {
+  background: #0000ff40;
+}
+
 #frm-edit-panel {
   min-width: 200px;
   display: none;
@@ -218,11 +222,16 @@
   border: 1px solid black;
 }
 
+.frm-field-tile.selected {
+  background: #0000ff40;
+}
+
 .frm-prop {
   display: inline-block;
   padding: 5px;
   border: 1px solid #ddd;
   width: 40px;
+  background: white;
 }
 
 .frm-prop.name {

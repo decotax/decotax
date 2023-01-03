@@ -71,6 +71,7 @@ function _rebuildFieldOverlays() {
     if (field.page != g_pageNum)
       continue;
 
+    const line = field.line;
     const r = field.rect;
     const rect = new Rect(r[0], r[1], r[2], r[3]);
 
@@ -79,6 +80,11 @@ function _rebuildFieldOverlays() {
     rect.positionElement(overlay, 1);
     container.appendChild(overlay);
     g_fieldOverlays.set(field.line, overlay);
+
+    overlay.addEventListener("click", e => {
+      _selectField(line);
+      e.stopPropagation();
+    });
   }
 }
 
@@ -102,6 +108,8 @@ function _rebuildFieldTiles() {
     if (field.page != g_pageNum)
       continue;
 
+    const line = field.line;
+
     const tile = document.createElement("div");
     tile.classList.add("frm-field-tile");
     tile.appendChild(_createPropDom(field, "line"));
@@ -113,7 +121,37 @@ function _rebuildFieldTiles() {
     tile.appendChild(_createPropDom(field, "rect", 3));
     container.appendChild(tile);
     g_fieldTiles.set(field.line, tile);
+
+    tile.addEventListener("click", e => {
+      _selectField(line);
+      e.stopPropagation();
+    });
   }
+}
+
+function _selectField(line) {
+  if (g_selectedLine == line)
+    return;
+
+  const old = g_selectedLine;
+  if (old != null) {
+    g_fieldOverlays.get(old).classList.remove("selected");
+    g_fieldTiles.get(old).classList.remove("selected");
+  }
+
+  g_selectedLine = line;
+
+  if (line != null) {
+    g_fieldOverlays.get(line).classList.add("selected");
+    g_fieldTiles.get(line).classList.add("selected");
+  }
+
+  const canvas_el = $("#frm-canvas");
+  const clear_fn = () => {
+    _selectField(null);
+    canvas_el.removeEventListener("click", clear_fn);
+  }
+  canvas_el.addEventListener("click", clear_fn);
 }
 
 function reset() {
