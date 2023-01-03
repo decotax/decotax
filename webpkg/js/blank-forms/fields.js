@@ -6,15 +6,16 @@ import {
   updateDoc
 } from "firebase/firestore/lite";
 
-import { $ } from "../util.js";
+import { $, removeAllChildren } from "../util.js";
 
 let g_db;
 let g_docId;
 let g_fields;
 let g_pageNum;
 
-let g_fieldOverlays = [];
-let g_fieldTiles = [];
+let g_fieldOverlays = new Map;
+let g_fieldTiles = new Map;
+let g_selectedLine = null;
 
 async function persist() {
   await updateDoc(
@@ -24,13 +25,15 @@ async function persist() {
 
 function add(dragResult) {
   const r = dragResult.rect;
+  // TODO: ensure uniqueness
+  const line = String(g_fields.length + 1);
   g_fields.push({
-    line: String(g_fields.length + 1),  // TODO: ensure uniqueness
+    line: line,
     name: "[name]",
     page: g_pageNum,
     rect: [r.x, r.y, r.width, r.height]
   });
-  g_fieldOverlays.push(dragResult.field_el);
+  g_fieldOverlays.set(line, dragResult.field_el);
   persist();
 }
 
@@ -41,9 +44,7 @@ function initForForm(form, db) {
   if (!g_fields) {
     g_fields = form.fields = [];
   }
-
-  _rebuildFieldOverlays();
-  _rebuildFieldTiles();
+  _rebuildTilesAndOverlays();
 }
 
 function onChangePage(page_num) {
@@ -52,17 +53,19 @@ function onChangePage(page_num) {
   g_pageNum = page_num;
   if (!g_fields)
     return;
+  _rebuildTilesAndOverlays();
+}
 
+function _rebuildTilesAndOverlays() {
   _rebuildFieldOverlays();
   _rebuildFieldTiles();
+  g_selectedLine = null;
 }
 
 function _rebuildFieldOverlays() {
-  const canvas_el = $("#frm-canvas");
-  for (const overlay of g_fieldOverlays)
-    if (overlay.parentNode)
-      overlay.parentNode.removeChild(overlay);
-  g_fieldOverlays = [];
+  const container = $("#frm-canvas-overlays");
+  removeAllChildren(container);
+  g_fieldOverlays.clear();
 
   for (const field of g_fields) {
     if (field.page != g_pageNum)
@@ -74,8 +77,8 @@ function _rebuildFieldOverlays() {
     const overlay = document.createElement("div");
     overlay.setAttribute("class", "frm-field");
     rect.positionElement(overlay, 1);
-    canvas_el.appendChild(overlay);
-    g_fieldOverlays.push(overlay);
+    container.appendChild(overlay);
+    g_fieldOverlays.set(field.line, overlay);
   }
 }
 
@@ -92,9 +95,9 @@ function _createPropDom(field, prop, idx) {
 
 function _rebuildFieldTiles() {
   const container = $("#frm-edit-tiles");
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  removeAllChildren(container);
+  g_fieldTiles.clear();
+
   for (const field of g_fields) {
     if (field.page != g_pageNum)
       continue;
@@ -109,6 +112,7 @@ function _rebuildFieldTiles() {
     tile.appendChild(_createPropDom(field, "rect", 2));
     tile.appendChild(_createPropDom(field, "rect", 3));
     container.appendChild(tile);
+    g_fieldTiles.set(field.line, tile);
   }
 }
 

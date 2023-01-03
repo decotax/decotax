@@ -176,7 +176,6 @@
   top: 0;
 }
 
-
 #frm-canvas-panel > .spinner {
   display: none;
   margin-left: 40px;
@@ -185,7 +184,11 @@
 .frm-field {
   position: absolute;
   border: 1px solid blue;
-  background: #0000ff04;
+  background: #0000ff10;
+}
+
+.frm-field:hover {
+  background: #0000ff28;
 }
 
 #frm-edit-panel {

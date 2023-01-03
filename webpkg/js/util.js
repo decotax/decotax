@@ -6,6 +6,12 @@ function $(selector) {
   return document.querySelector(selector);
 }
 
+function removeAllChildren(node) {
+  let child;
+  while (child = node.lastChild)
+    node.removeChild(child);
+}
+
 function flashAndFocusField(el) {
   el.classList.remove("error-outline");
   el.focus();
@@ -19,4 +25,4 @@ function flashAndFocusField(el) {
   });
 }
 
-export { $, flashAndFocusField };
+export { $, removeAllChildren, flashAndFocusField };
