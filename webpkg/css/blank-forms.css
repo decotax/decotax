@@ -209,3 +209,19 @@
 .view-blank-forms.edit #frm-edit {
   display: none;
 }
+
+.frm-field-tile {
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.frm-prop {
+  display: inline-block;
+  padding: 5px;
+  border: 1px solid #ddd;
+  width: 40px;
+}
+
+.frm-prop.name {
+  width: 144px;
+}

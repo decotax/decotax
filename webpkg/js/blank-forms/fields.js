@@ -79,8 +79,37 @@ function _rebuildFieldOverlays() {
   }
 }
 
-function _rebuildFieldTiles() {
+function _createPropDom(field, prop, idx) {
+  const dom = document.createElement("div");
+  dom.classList.add("frm-prop");
+  dom.classList.add(prop);
+  let val = field[prop];
+  if (idx != null)
+    val = val[idx];
+  dom.innerText = val;
+  return dom;
+}
 
+function _rebuildFieldTiles() {
+  const container = $("#frm-edit-tiles");
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+  for (const field of g_fields) {
+    if (field.page != g_pageNum)
+      continue;
+
+    const tile = document.createElement("div");
+    tile.classList.add("frm-field-tile");
+    tile.appendChild(_createPropDom(field, "line"));
+    tile.appendChild(_createPropDom(field, "name"));
+    tile.appendChild(document.createElement("br"));
+    tile.appendChild(_createPropDom(field, "rect", 0));
+    tile.appendChild(_createPropDom(field, "rect", 1));
+    tile.appendChild(_createPropDom(field, "rect", 2));
+    tile.appendChild(_createPropDom(field, "rect", 3));
+    container.appendChild(tile);
+  }
 }
 
 function reset() {
