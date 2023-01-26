@@ -33,7 +33,7 @@ function add(dragResult) {
     page: g_pageNum,
     rect: [r.x, r.y, r.width, r.height]
   });
-  g_fieldOverlays.set(line, dragResult.field_el);
+  _rebuildTilesAndOverlays();
   persist();
 }
 

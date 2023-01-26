@@ -388,9 +388,9 @@ async function dragNewRect() {
       const end_point = get_local_point(e);
       const rect = Fields.Rect.fromCorners(start_params.start_point, end_point);
       const field_el = start_params.field_el;
-      rect.positionElement(field_el, 1);
+      canvas_el.removeChild(field_el);
 
-      resolve({rect, field_el});
+      resolve({rect});
 
       canvas_el.releasePointerCapture(start_params.pointer_id);
       canvas_el.removeEventListener("pointermove", pointermove_fn);
