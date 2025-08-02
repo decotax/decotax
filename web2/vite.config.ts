@@ -5,6 +5,6 @@ import { createHtmlPlugin } from "vite-plugin-html";
 export default defineConfig({
   plugins: [
     vue(),
-    createHtmlPlugin()
+    createHtmlPlugin({ entry: "main.ts" })
   ]
 });
