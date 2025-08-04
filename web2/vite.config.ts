@@ -1,4 +1,4 @@
-import { PreRenderedAsset } from "rollup";
+import { OutputOptions, PreRenderedAsset } from "rollup";
 import { defineConfig, Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
@@ -12,15 +12,7 @@ export default defineConfig({
     minifyHtmlPlugin(),
     staticCopyPlugin()
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        assetFileNames: assetOutputName,
-        chunkFileNames: "assets/[name].js",
-        entryFileNames: "assets/main.js"
-      },
-    }
-  },
+  build: { rollupOptions: { output: outputOptions() } },
   server: { fs: { allow: [ ".." ] } }
 });
 
@@ -48,7 +40,14 @@ function staticCopyPlugin(): Plugin[] {
   return viteStaticCopy({ targets });
 }
 
-function assetOutputName(info: PreRenderedAsset) {
-  const dir = info.names[0].match(/\.woff2$/) ? "fonts" : "assets";
-  return `${dir}/[name][extname]`;
+function outputOptions(): OutputOptions {
+  const dir = "assets";
+  return {
+    assetFileNames: (info: PreRenderedAsset) => {
+      const is_font = info.names[0].match(/\.woff2$/);
+      return `${is_font ? "fonts" : dir}/[name][extname]`;
+    },
+    chunkFileNames: `${dir}/[name].js`,
+    entryFileNames: `${dir}/main.js`
+  };
 }
