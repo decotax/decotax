@@ -13,7 +13,13 @@ export default defineConfig({
     staticCopyPlugin()
   ],
   build: {
-    rollupOptions: { output: { assetFileNames: assetOutputName } }
+    rollupOptions: {
+      output: {
+        assetFileNames: assetOutputName,
+        chunkFileNames: "assets/[name].js",
+        entryFileNames: "assets/main.js"
+      },
+    }
   },
   server: { fs: { allow: [ ".." ] } }
 });
