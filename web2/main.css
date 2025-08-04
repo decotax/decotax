@@ -1,5 +1,7 @@
 @import "purecss/build/base.css";
+@import "fonts.css";
 
 body {
   margin: 0;
+  font-family: "Source Sans Pro";
 }

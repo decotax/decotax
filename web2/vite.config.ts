@@ -1,3 +1,4 @@
+import { PreRenderedAsset } from "rollup";
 import { defineConfig, Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
@@ -10,7 +11,11 @@ export default defineConfig({
     vue(),
     minifyHtmlPlugin(),
     staticCopyPlugin()
-  ]
+  ],
+  build: {
+    rollupOptions: { output: { assetFileNames: assetOutputName } }
+  },
+  server: { fs: { allow: [ ".." ] } }
 });
 
 function pageTemplatePlugin(): Plugin {
@@ -35,4 +40,9 @@ function staticCopyPlugin(): Plugin[] {
     { src: "../logo/favicon.ico", dest: "." }
   ];
   return viteStaticCopy({ targets });
+}
+
+function assetOutputName(info: PreRenderedAsset) {
+  const dir = info.names[0].match(/\.woff2$/) ? "fonts" : "assets";
+  return `${dir}/[name][extname]`;
 }
