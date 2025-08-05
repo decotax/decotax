@@ -1,5 +1,5 @@
-import { OutputOptions, PreRenderedAsset } from "rollup";
-import { defineConfig, Plugin } from "vite";
+import type { OutputOptions, PreRenderedAsset } from "rollup";
+import { defineConfig, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -41,7 +41,8 @@ function staticCopyPlugin(): Plugin[] {
 }
 
 function outputOptions(): OutputOptions {
-  const dir = "assets";
+  const rev = process.env.VITE_REV;
+  const dir = rev ? `r${rev}` : "assets";
   return {
     assetFileNames: (info: PreRenderedAsset) => {
       const is_font = info.names[0].match(/\.woff2$/);

@@ -2,6 +2,9 @@
   "name": "decotax",
   "type": "module",
   "scripts": {
+    "dev": "vite dev",
+    "build": "VITE_REV=$(git rev-list HEAD --count) vite build",
+    "preview": "vite preview",
     "type-check": "vue-tsc --build"
   },
   "devDependencies": {
