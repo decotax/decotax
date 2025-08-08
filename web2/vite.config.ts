@@ -3,6 +3,7 @@ import { defineConfig, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { cloudflare } from "@cloudflare/vite-plugin";
 import fs from "fs";
 
 export default defineConfig({
@@ -10,7 +11,8 @@ export default defineConfig({
     pageTemplatePlugin(),
     vue(),
     minifyHtmlPlugin(),
-    staticCopyPlugin()
+    staticCopyPlugin(),
+    cloudflare()
   ],
   build: { rollupOptions: { output: outputOptions() } },
   server: { fs: { allow: [ ".." ] } }

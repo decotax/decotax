@@ -3,3 +3,4 @@ node_modules/
 out/
 *.code-workspace
 dist/
+.wrangler/
