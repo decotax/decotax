@@ -37,7 +37,8 @@ function minifyHtmlPlugin(): Plugin {
 
 function staticCopyPlugin(): Plugin[] {
   const targets = [
-    { src: "../logo/favicon.ico", dest: "." }
+    { src: "../logo/favicon.ico", dest: "." },
+    { src: "_headers", dest: "." }
   ];
   return viteStaticCopy({ targets });
 }
