@@ -1,0 +1,1 @@
+declare module '@vituum/vite-plugin-liquid';

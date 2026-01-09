@@ -4,27 +4,22 @@ import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { cloudflare } from "@cloudflare/vite-plugin";
-import fs from "fs";
+import liquid from "@vituum/vite-plugin-liquid";
 
 export default defineConfig({
   plugins: [
-    pageTemplatePlugin(),
+    liquid(),
     vue(),
     minifyHtmlPlugin(),
     staticCopyPlugin(),
     cloudflare()
   ],
-  build: { rollupOptions: { output: outputOptions() } },
+  build: { rollupOptions: {
+    input: ["index.liquid.html"],
+    output: outputOptions()
+  } },
   server: { fs: { allow: [ ".." ] } }
 });
-
-function pageTemplatePlugin(): Plugin {
-  const marker = "<!-- $CONTENT -->";
-  const template = fs.readFileSync("page-template.html", "utf-8");
-  const handler = (html: string) => template.replace(marker, html);
-  return { name: "vite-plugin-page-template",
-           transformIndexHtml: { order: "pre", handler } };
-}
 
 function minifyHtmlPlugin(): Plugin {
   const handler = (html: string) => minify(html, {
