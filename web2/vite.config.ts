@@ -4,7 +4,9 @@ import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { cloudflare } from "@cloudflare/vite-plugin";
-import { Liquid } from 'liquidjs';
+import { Liquid, Value } from 'liquidjs';
+import fs from "fs";
+import MarkdownIt from "markdown-it";
 
 export default defineConfig(({ mode }) => ({
   plugins: [
@@ -33,8 +35,20 @@ function reloadPlugin(): Plugin {
 
 function liquidPlugin(mode: string): Plugin {
   const engine = new Liquid({ globals: { mode } });
+  registerMarkdownRenderer(engine);
   const handler = (html: string) => engine.parseAndRender(html);
   return { name: "liquid", transformIndexHtml: { order: "pre", handler } };
+}
+
+function registerMarkdownRenderer(engine: Liquid) {
+  const markdown = new MarkdownIt();
+  engine.registerTag("renderFile", {
+    parse(token) { this.value = new Value(token.args, engine); },
+    *render(ctx) {
+      const file: string = yield this.value.value(ctx);
+      return markdown.render(fs.readFileSync(file, "utf-8"));
+    }
+  });
 }
 
 function minifyHtmlPlugin(): Plugin {
