@@ -1,33 +1,48 @@
 import type { OutputOptions, PreRenderedAsset } from "rollup";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, type HmrContext, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { minify } from "html-minifier-terser";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { cloudflare } from "@cloudflare/vite-plugin";
-import liquid from "@vituum/vite-plugin-liquid";
+import { Liquid } from 'liquidjs';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-    liquid(),
+    reloadPlugin(),
+    liquidPlugin(mode),
     vue(),
     minifyHtmlPlugin(),
     staticCopyPlugin(),
     cloudflare()
   ],
   build: { rollupOptions: {
-    input: ["index.liquid.html"],
-    output: outputOptions()
-  } },
+    input: [ "index.html", "about.html" ],
+    output: outputOptions() }
+  },
   server: { fs: { allow: [ ".." ] } }
-});
+}));
+
+function reloadPlugin(): Plugin {
+  const handler = ({ file, server }: HmrContext) => {
+    if ([ ".html", ".liquid" ].some(ext => file.endsWith(ext))) {
+      server.ws.send({ type: "full-reload" });
+    }
+  };
+  return { name: "reload", handleHotUpdate: handler };
+}
+
+function liquidPlugin(mode: string): Plugin {
+  const engine = new Liquid({ globals: { mode } });
+  const handler = (html: string) => engine.parseAndRender(html);
+  return { name: "liquid", transformIndexHtml: { order: "pre", handler } };
+}
 
 function minifyHtmlPlugin(): Plugin {
   const handler = (html: string) => minify(html, {
     collapseWhitespace: true,
     removeComments: true
   });
-  return { name: "vite-plugin-minify-html",
-           transformIndexHtml: { handler } };
+  return { name: "minify", transformIndexHtml: handler };
 }
 
 function staticCopyPlugin(): Plugin[] {
