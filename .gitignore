@@ -1,5 +1,6 @@
 __pycache__/
 node_modules/
+gen/
 out/
 *.code-workspace
 dist/
